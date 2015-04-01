@@ -143,6 +143,7 @@ main = function () {
         j = undefined,
         len = undefined,
         results = undefined,
+        userid = undefined,
         username = undefined,
         widget = undefined;
     results = [];

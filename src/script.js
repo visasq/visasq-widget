@@ -107,7 +107,7 @@ main = function() {
   let widgets;
   widgets = getElementsByClassName(document, 'a', 'visasq-cards');
   return addOnloadHandler(function() {
-    let doc, iframe, itemRepository, itemsBlock, j, len, results, username, widget;
+    let doc, iframe, itemRepository, itemsBlock, j, len, results, userid, username, widget;
     results = [];
     for (j = 0, len = widgets.length; j < len; j++) {
       widget = widgets[j];
