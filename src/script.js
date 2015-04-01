@@ -8,8 +8,6 @@ class ItemRepository {
 
   findByUsername(userid, username, callback) {
 
-    alert(userid);
-
     if (username in this.itemContainer) {
       callback(this.itemContainer[username]);
       return;

@@ -25,8 +25,6 @@ var ItemRepository = (function () {
     findByUsername: {
       value: function findByUsername(userid, username, callback) {
 
-        alert(userid);
-
         if (username in this.itemContainer) {
           callback(this.itemContainer[username]);
           return;
