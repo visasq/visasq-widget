@@ -6,13 +6,16 @@ class ItemRepository {
     this.itemContainer = {};
   }
 
-  findByUsername(username, callback) {
+  findByUsername(userid, username, callback) {
+
+    alert(userid);
 
     if (username in this.itemContainer) {
       callback(this.itemContainer[username]);
       return;
     }
-    return corsRequest("https://service.visasq.com/api/v3/users/" + username + "/topics", function() {
+    // return corsRequest("https://service.visasq.com/api/v3/users/" + username + "/topics", function() {
+    return corsRequest("http://localhost/api/v3/users/" + userid + "/topics", function() {
       return function(rows) {
         let j, len, row;
         this.itemContainer[username] = [];
@@ -109,6 +112,7 @@ main = function() {
     for (j = 0, len = widgets.length; j < len; j++) {
       widget = widgets[j];
       username = widget.getAttribute('data-visasq-username');
+      userid = widget.getAttribute('data-visasq-userid');
       iframe = document.createElement('iframe');
       iframe.style.display = 'none';
       iframe.setAttribute("frameBorder", "0");
@@ -122,7 +126,7 @@ main = function() {
       setInnerText(doc.getElementById('user_name'), username);
       itemsBlock = doc.getElementById('items');
       itemRepository = new ItemRepository();
-      results.push(itemRepository.findByUsername(username, function(items) {
+      results.push(itemRepository.findByUsername(userid, username, function(items) {
         let item, itemElement, k, l, len1, len2, ref, tag, tagElement, title;
         if (items.length > 0) {
           doc.getElementById('user_avatar').setAttribute('src', items[0].user.profileImageUrl);

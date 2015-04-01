@@ -23,13 +23,16 @@ var ItemRepository = (function () {
 
   _createClass(ItemRepository, {
     findByUsername: {
-      value: function findByUsername(username, callback) {
+      value: function findByUsername(userid, username, callback) {
+
+        alert(userid);
 
         if (username in this.itemContainer) {
           callback(this.itemContainer[username]);
           return;
         }
-        return corsRequest("https://service.visasq.com/api/v3/users/" + username + "/topics", function () {
+        // return corsRequest("https://service.visasq.com/api/v3/users/" + username + "/topics", function() {
+        return corsRequest("http://localhost/api/v3/users/" + userid + "/topics", function () {
           return function (rows) {
             var j = undefined,
                 len = undefined,
@@ -146,6 +149,7 @@ main = function () {
     for (j = 0, len = widgets.length; j < len; j++) {
       widget = widgets[j];
       username = widget.getAttribute("data-visasq-username");
+      userid = widget.getAttribute("data-visasq-userid");
       iframe = document.createElement("iframe");
       iframe.style.display = "none";
       iframe.setAttribute("frameBorder", "0");
@@ -159,7 +163,7 @@ main = function () {
       setInnerText(doc.getElementById("user_name"), username);
       itemsBlock = doc.getElementById("items");
       itemRepository = new ItemRepository();
-      results.push(itemRepository.findByUsername(username, function (items) {
+      results.push(itemRepository.findByUsername(userid, username, function (items) {
         var item = undefined,
             itemElement = undefined,
             k = undefined,
