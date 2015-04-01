@@ -13,7 +13,7 @@ class ItemRepository {
       return;
     }
     // return corsRequest("https://service.visasq.com/api/v3/users/" + username + "/topics", function() {
-    return corsRequest("http://localhost/api/v3/users/" + userid + "/topics", function() {
+    return corsRequest("http://localhost:8080/api/v3/users/" + userid + "/topics", function() {
       return function(rows) {
         let j, len, row;
         this.itemContainer[username] = [];

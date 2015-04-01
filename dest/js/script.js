@@ -30,7 +30,7 @@ var ItemRepository = (function () {
           return;
         }
         // return corsRequest("https://service.visasq.com/api/v3/users/" + username + "/topics", function() {
-        return corsRequest("http://localhost/api/v3/users/" + userid + "/topics", function () {
+        return corsRequest("http://localhost:8080/api/v3/users/" + userid + "/topics", function () {
           return function (rows) {
             var j = undefined,
                 len = undefined,
