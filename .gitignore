@@ -1,0 +1,8 @@
+# OS X
+.DS_Store
+
+# NPM dumps
+/npm-debug.log
+
+# NPM dependencies
+/node_modules/
