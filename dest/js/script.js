@@ -4,9 +4,7 @@ var _createClass = (function () { function defineProperties(target, props) { for
 
 var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 
-var Item = undefined,
-    User = undefined,
-    addOnloadHandler = undefined,
+var addOnloadHandler = undefined,
     corsRequest = undefined,
     getElementsByClassName = undefined,
     main = undefined,
@@ -24,24 +22,22 @@ var ItemRepository = (function () {
   _createClass(ItemRepository, {
     findByUsername: {
       value: function findByUsername(userid, username, callback) {
+        var _this = this;
 
         if (username in this.itemContainer) {
           callback(this.itemContainer[username]);
           return;
         }
-        // return corsRequest("https://service.visasq.com/api/v3/users/" + username + "/topics", function() {
-        return corsRequest("http://localhost:8080/api/v3/users/" + userid + "/topics", function () {
-          return function (rows) {
-            var j = undefined,
-                len = undefined,
-                row = undefined;
-            this.itemContainer[username] = [];
-            for (j = 0, len = rows.length; j < len; j++) {
-              row = rows[j];
-              this.itemContainer[username].push(new Item(row));
-            }
-            return callback(this.itemContainer[username]);
-          };
+        return corsRequest("http://localhost:8080/api/v3/users/" + userid + "/topics", function (rows) {
+          var j = undefined,
+              len = undefined,
+              row = undefined;
+          _this.itemContainer[username] = [];
+          for (j = 0, len = rows.length; j < len; j++) {
+            row = rows[j];
+            _this.itemContainer[username].push(new Item(row));
+          }
+          return callback(_this.itemContainer[username]);
         });
       }
     }
@@ -49,6 +45,17 @@ var ItemRepository = (function () {
 
   return ItemRepository;
 })();
+
+var Item = function Item(item) {
+  _classCallCheck(this, Item);
+
+  var j = undefined,
+      len = undefined,
+      ref = undefined,
+      tag = undefined;
+  this.title = item.title;
+  this.url = item.url;
+};
 
 corsRequest = function (url, callback) {
   var method = undefined,
@@ -63,15 +70,13 @@ corsRequest = function (url, callback) {
   } else {
     throw "Failed to initialize CORSRequest";
   }
-  request.onload = function () {
-    return function () {
-      var result = undefined;
-      result = JSON.parse(request.response);
-      if (request.status < 200 || 300 <= request.status) {
-        throw result.error;
-      }
-      return callback(result);
-    };
+  request.onload = function (result) {
+    var result = undefined;
+    result = JSON.parse(request.response);
+    if (request.status < 200 || 300 <= request.status) {
+      throw result.error;
+    }
+    return callback(result);
   };
   return request.send();
 };
@@ -128,7 +133,7 @@ setInnerText = function (element, text) {
   }
 };
 
-template = "<!DOCTYPE html>\n<html lang=\"ja\">\n<head>\n<meta charset=\"utf-8\" />\n<style type=\"text/css\">\n<!--%css%-->\n</style>\n</head>\n<body>\n<div class=\"bar\">\n    <a href=\"http://qiita.com\" class=\"logo\" target=\"_blank\"></a>\n    <a href=\"\" class=\"user\" id=\"user_url\" target=\"_blank\">\n        <img class=\"avatar\" src=\"#\" id=\"user_avatar\">\n       <span class=\"username\" id=\"user_name\"></span>\n </a>\n</div>\n<div class=\"items\" id=\"items\"></div>\n</body>\n</html>";
+template = "\n<!DOCTYPE html>\n<html lang=\"ja\">\n<head>\n<meta charset=\"utf-8\" />\n<style type=\"text/css\">\n<!--%css%-->\n</style>\n</head>\n<body>\n<div class=\"bar\">\n  <a href=\"http://qiita.com\" class=\"logo\" target=\"_blank\"></a>\n  <a href=\"\" class=\"user\" id=\"user_url\" target=\"_blank\">\n    <img class=\"avatar\" src=\"#\" id=\"user_avatar\">\n    <span class=\"username\" id=\"user_name\"></span>\n  </a>\n</div>\n<div class=\"items\" id=\"items\"></div>\n</body>\n</html>\n";
 
 main = function () {
   var widgets = undefined;

@@ -1,4 +1,4 @@
-let Item, User, addOnloadHandler, corsRequest, getElementsByClassName, main, setIframeHeight, setInnerText, template;
+let addOnloadHandler, corsRequest, getElementsByClassName, main, setIframeHeight, setInnerText, template;
 
 class ItemRepository {
 
@@ -12,19 +12,24 @@ class ItemRepository {
       callback(this.itemContainer[username]);
       return;
     }
-    // return corsRequest("https://service.visasq.com/api/v3/users/" + username + "/topics", function() {
-    return corsRequest("http://localhost:8080/api/v3/users/" + userid + "/topics", function() {
-      return function(rows) {
-        let j, len, row;
-        this.itemContainer[username] = [];
-        for (j = 0, len = rows.length; j < len; j++) {
-          row = rows[j];
-          this.itemContainer[username].push(new Item(row));
-        }
-        return callback(this.itemContainer[username]);
-      };
+    return corsRequest("http://localhost:8080/api/v3/users/" + userid + "/topics", (rows) => {
+      let j, len, row;
+      this.itemContainer[username] = [];
+      for (j = 0, len = rows.length; j < len; j++) {
+        row = rows[j];
+        this.itemContainer[username].push(new Item(row));
+      }
+      return callback(this.itemContainer[username]);
     });
 
+  }
+}
+
+class Item {
+  constructor(item) {
+    let j, len, ref, tag;
+    this.title = item.title;
+    this.url = item.url;
   }
 }
 
@@ -40,15 +45,13 @@ corsRequest = function(url, callback) {
   } else {
     throw "Failed to initialize CORSRequest";
   }
-  request.onload = function() {
-    return function() {
-      let result;
-      result = JSON.parse(request.response);
-      if (request.status < 200 || 300 <= request.status) {
-        throw result.error;
-      }
-      return callback(result);
-    };
+  request.onload = function(result) {
+    let result;
+    result = JSON.parse(request.response);
+    if (request.status < 200 || 300 <= request.status) {
+      throw result.error;
+    }
+    return callback(result);
   };
   return request.send();
 };
@@ -99,7 +102,27 @@ if (typeof element.textContent !== "undefined") {
 }
 };
 
-template = "<!DOCTYPE html>\n<html lang=\"ja\">\n<head>\n<meta charset=\"utf-8\" />\n<style type=\"text/css\">\n<!--%css%-->\n</style>\n</head>\n<body>\n<div class=\"bar\">\n    <a href=\"http://qiita.com\" class=\"logo\" target=\"_blank\"></a>\n    <a href=\"\" class=\"user\" id=\"user_url\" target=\"_blank\">\n        <img class=\"avatar\" src=\"#\" id=\"user_avatar\">\n       <span class=\"username\" id=\"user_name\"></span>\n </a>\n</div>\n<div class=\"items\" id=\"items\"></div>\n</body>\n</html>";
+template = `
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<style type="text/css">
+<!--%css%-->
+</style>
+</head>
+<body>
+<div class="bar">
+  <a href="http://qiita.com" class="logo" target="_blank"></a>
+  <a href="" class="user" id="user_url" target="_blank">
+    <img class="avatar" src="#" id="user_avatar">
+    <span class="username" id="user_name"></span>
+  </a>
+</div>
+<div class="items" id="items"></div>
+</body>
+</html>
+`;
 
 main = function() {
   let widgets;
