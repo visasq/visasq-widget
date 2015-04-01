@@ -178,30 +178,17 @@ main = function () {
             tag = undefined,
             tagElement = undefined,
             title = undefined;
-        if (items.length > 0) {
-          doc.getElementById("user_avatar").setAttribute("src", items[0].user.profileImageUrl);
-          doc.getElementById("user_url").setAttribute("href", items[0].user.url);
-        }
+        if (items.length > 0) {}
         for (k = 0, len1 = items.length; k < len1; k++) {
           item = items[k];
           itemElement = document.createElement("div");
           itemElement.setAttribute("class", "item");
           title = document.createElement("a");
           setInnerText(title, item.title);
-          title.setAttribute("href", item.url);
+          // title.setAttribute('href', item.url);
           title.setAttribute("class", "title");
           title.setAttribute("target", "_blank");
           itemElement.appendChild(title);
-          ref = item.tags;
-          for (l = 0, len2 = ref.length; l < len2; l++) {
-            tag = ref[l];
-            tagElement = document.createElement("a");
-            setInnerText(tagElement, tag.name);
-            tagElement.setAttribute("href", tag.url);
-            tagElement.setAttribute("class", "tag");
-            tagElement.setAttribute("target", "_blank");
-            itemElement.appendChild(tagElement);
-          }
           itemsBlock.appendChild(itemElement);
         }
         iframe.style.display = "block";
@@ -213,3 +200,6 @@ main = function () {
 };
 
 main();
+
+// doc.getElementById('user_avatar').setAttribute('src', items[0].user.profileImageUrl);
+// doc.getElementById('user_url').setAttribute('href', items[0].user.url);
