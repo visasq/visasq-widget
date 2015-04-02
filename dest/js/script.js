@@ -14,8 +14,9 @@ var addOnloadHandler = undefined,
 
 // const BASE_URL = 'https://service.visasq.com/';
 var BASE_URL = "http://localhost:8080/";
-var TOPICS_URL = "topics/";
-var USERS_URL = "users/";
+var TOPICS_PATH = "topics";
+var USERS_PATH = "users";
+var API_PATH = "api/v3/";
 
 var ItemRepository = (function () {
   function ItemRepository() {
@@ -33,10 +34,10 @@ var ItemRepository = (function () {
           callback(this.itemContainer[username]);
           return;
         }
-        return corsRequest("" + BASE_URL + "" + USERS_URL + "" + userid, function (user) {
+        return corsRequest("" + BASE_URL + "" + API_PATH + "" + USERS_PATH + "/" + userid, function (user) {
           _this.itemContainer[username] = [];
           _this.itemContainer[username].push(new User(user.result));
-          return corsRequest("" + BASE_URL + "" + USERS_URL + "" + userid + "/" + TOPICS_URL, function (topics) {
+          return corsRequest("" + BASE_URL + "" + API_PATH + "" + USERS_PATH + "/" + userid + "/" + TOPICS_PATH, function (topics) {
             topics.map(function (topic) {
               _this.itemContainer[username].push(new Topic(topic));
             });
@@ -61,7 +62,7 @@ var Topic = function Topic(item) {
   this.price = item.price;
   this.imageUrl = item.author.image_url;
   this.displayName = item.author.display_name;
-  this.url = "" + BASE_URL + "" + USERS_URL + "" + id;
+  this.url = "" + BASE_URL + "" + USERS_PATH + "/" + id;
 };
 
 var User = function User(item) {
@@ -74,7 +75,7 @@ var User = function User(item) {
   this.displayName = item.display_name;
   this.companyName = item.positions[0].company_name;
   this.title = item.positions[0].title;
-  this.url = "" + BASE_URL + "" + TOPICS_URL + "" + id;
+  this.url = "" + BASE_URL + "" + TOPICS_PATH + "/" + id;
 };
 
 corsRequest = function (url, callback) {
@@ -214,7 +215,7 @@ main = function () {
             itemElement.setAttribute("class", "card--user--widget");
 
             var imageUrl = item.imageUrl,
-                _userImage = undefined,
+                userImage = undefined,
                 text = undefined,
                 _name = undefined,
                 job = undefined,
@@ -222,11 +223,12 @@ main = function () {
                 title = undefined,
                 description = undefined,
                 _end = undefined,
-                _button = undefined;
-            _userImage = document.createElement("div");
-            _userImage.setAttribute("class", "user-img--s");
-            _userImage.setAttribute("style", "background-image:url(\"" + imageUrl + "\")");
-            info.appendChild(_userImage);
+                button = undefined;
+
+            userImage = document.createElement("div");
+            userImage.setAttribute("class", "user-img--s");
+            userImage.setAttribute("style", "background-image:url(\"" + imageUrl + "\")");
+            info.appendChild(userImage);
 
             text = document.createElement("div");
             text.setAttribute("class", "text");
@@ -258,10 +260,10 @@ main = function () {
             _end.setAttribute("class", "end");
             itemElement.appendChild(_end);
 
-            _button = document.createElement("a");
-            _button.setAttribute("class", "button_blue");
-            setInnerText(_button, "ビザスクで相談");
-            _end.appendChild(_button);
+            button = document.createElement("a");
+            button.setAttribute("class", "button_blue");
+            setInnerText(button, "ビザスクで相談");
+            _end.appendChild(button);
           } else if (item.__class__ === "Topic") {
 
             var imageUrl = item.imageUrl,
@@ -269,7 +271,16 @@ main = function () {
                 title = undefined,
                 description = undefined,
                 price = undefined,
-                priceIcon = undefined;
+                priceIcon = undefined,
+                bottom = undefined,
+                liked = undefined,
+                likedStar = undefined,
+                likedCount = undefined,
+                divider = undefined,
+                userImage = undefined,
+                _name2 = undefined,
+                _end2 = undefined,
+                button = undefined;
 
             itemElement.setAttribute("class", "topic_item");
 
@@ -320,19 +331,19 @@ main = function () {
             userImage.setAttribute("style", "background-image:url(\"" + imageUrl + "\")");
             info.appendChild(userImage);
 
-            name = document.createElement("div");
-            setInnerText(name, item.displayName);
-            name.setAttribute("class", "name");
-            itemElement.appendChild(name);
+            _name2 = document.createElement("div");
+            setInnerText(_name2, item.displayName);
+            _name2.setAttribute("class", "name");
+            itemElement.appendChild(_name2);
 
-            end = document.createElement("div");
-            end.setAttribute("class", "end");
-            itemElement.appendChild(end);
+            _end2 = document.createElement("div");
+            _end2.setAttribute("class", "end");
+            itemElement.appendChild(_end2);
 
             button = document.createElement("a");
             button.setAttribute("class", "button_blue");
             setInnerText(button, "ビザスクで相談");
-            end.appendChild(button);
+            _end2.appendChild(button);
           }
 
           itemsBlock.appendChild(itemElement);

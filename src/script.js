@@ -2,8 +2,9 @@ let addOnloadHandler, corsRequest, getElementsByClassName, main, setIframeHeight
 
 // const BASE_URL = 'https://service.visasq.com/';
 const BASE_URL = 'http://localhost:8080/';
-const TOPICS_URL = 'topics/';
-const USERS_URL = 'users/';
+const TOPICS_PATH = 'topics';
+const USERS_PATH = 'users';
+const API_PATH = 'api/v3/';
 
 class ItemRepository {
   constructor() {
@@ -14,10 +15,10 @@ class ItemRepository {
       callback(this.itemContainer[username]);
       return;
     }
-    return corsRequest(`${BASE_URL}${USERS_URL}${userid}`, (user) => {
+    return corsRequest(`${BASE_URL}${API_PATH}${USERS_PATH}/${userid}`, (user) => {
       this.itemContainer[username] = [];      
       this.itemContainer[username].push(new User(user.result));      
-      return corsRequest(`${BASE_URL}${USERS_URL}${userid}/${TOPICS_URL}`, (topics) => {
+      return corsRequest(`${BASE_URL}${API_PATH}${USERS_PATH}/${userid}/${TOPICS_PATH}`, (topics) => {
         topics.map((topic) => {
           this.itemContainer[username].push(new Topic(topic));          
         });
@@ -37,7 +38,7 @@ class Topic {
     this.price = item.price;
     this.imageUrl = item.author.image_url;
     this.displayName = item.author.display_name;
-    this.url = `${BASE_URL}${USERS_URL}${id}`;
+    this.url = `${BASE_URL}${USERS_PATH}/${id}`;
   }
 }
 
@@ -50,7 +51,7 @@ class User {
     this.displayName = item.display_name;
     this.companyName = item.positions[0].company_name;
     this.title = item.positions[0].title;
-    this.url = `${BASE_URL}${TOPICS_URL}${id}`
+    this.url = `${BASE_URL}${TOPICS_PATH}/${id}`
   }
 }
 
@@ -185,7 +186,9 @@ main = function() {
             itemElement.setAttribute('class', 'card--user--widget');
 
             let imageUrl = item.imageUrl,
-                userImage, text, name, job, companyName, title, description, end, button;
+                userImage, text, name, job, companyName,
+                title, description, end, button;
+
             userImage = document.createElement('div');
             userImage.setAttribute('class', 'user-img--s');
             userImage.setAttribute('style', `background-image:url("${imageUrl}")`);
@@ -229,7 +232,9 @@ main = function() {
           } else if(item.__class__ === 'Topic') {
 
             let imageUrl = item.imageUrl,
-                text, title, description, price, priceIcon;
+                text, title, description, price, priceIcon,
+                bottom, liked, likedStar, likedCount, divider,
+                userImage, name, end, button;
 
             itemElement.setAttribute('class', 'topic_item');
             
