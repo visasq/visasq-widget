@@ -1,35 +1,56 @@
 let addOnloadHandler, corsRequest, getElementsByClassName, main, setIframeHeight, setInnerText, template;
 
-class ItemRepository {
+// const BASE_URL = 'https://service.visasq.com/';
+const BASE_URL = 'http://localhost:8080/';
+const TOPICS_URL = 'topics/';
+const USERS_URL = 'users/';
 
+class ItemRepository {
   constructor() {
     this.itemContainer = {};
   }
-
-  findByUsername(userid, username, callback) {
-
+  load(userid, username, callback) {
     if (username in this.itemContainer) {
       callback(this.itemContainer[username]);
       return;
     }
-    return corsRequest("http://localhost:8080/api/v3/users/" + userid + "/topics", (rows) => {
-      let j, len, row;
-      this.itemContainer[username] = [];
-      for (j = 0, len = rows.length; j < len; j++) {
-        row = rows[j];
-        this.itemContainer[username].push(new Item(row));
-      }
-      return callback(this.itemContainer[username]);
+    return corsRequest(`${BASE_URL}${USERS_URL}${userid}`, (user) => {
+      this.itemContainer[username] = [];      
+      this.itemContainer[username].push(new User(user.result));      
+      return corsRequest(`${BASE_URL}${USERS_URL}${userid}/${TOPICS_URL}`, (topics) => {
+        topics.map((topic) => {
+          this.itemContainer[username].push(new Topic(topic));          
+        });
+        return callback(this.itemContainer[username]);
+      });
     });
-
   }
 }
 
-class Item {
+class Topic {
   constructor(item) {
-    let j, len, ref, tag;
+    this.__class__ = 'Topic';
+    let id = item.id;
     this.title = item.title;
-    this.url = item.url;
+    this.description = item.description;
+    this.blankPrice = item.blank_price;
+    this.price = item.price;
+    this.imageUrl = item.author.image_url;
+    this.displayName = item.author.display_name;
+    this.url = `${BASE_URL}${USERS_URL}${id}`;
+  }
+}
+
+class User {
+  constructor(item) {
+    this.__class__ = 'User';
+    let id = item.id;
+    this.description = item.description;
+    this.imageUrl = item.image_url;
+    this.displayName = item.display_name;
+    this.companyName = item.positions[0].company_name;
+    this.title = item.positions[0].title;
+    this.url = `${BASE_URL}${TOPICS_URL}${id}`
   }
 }
 
@@ -95,11 +116,11 @@ setIframeHeight = function(iframe) {
 };
 
 setInnerText = function(element, text) {
-if (typeof element.textContent !== "undefined") {
-  return element.textContent = text;
-} else {
-  return element.innerText = text;
-}
+  if (typeof element.textContent !== "undefined") {
+    return element.textContent = text;
+  } else {
+    return element.innerText = text;
+  }
 };
 
 template = `
@@ -112,13 +133,6 @@ template = `
 </style>
 </head>
 <body>
-<div class="bar">
-  <a href="http://qiita.com" class="logo" target="_blank"></a>
-  <a href="" class="user" id="user_url" target="_blank">
-    <img class="avatar" src="#" id="user_avatar">
-    <span class="username" id="user_name"></span>
-  </a>
-</div>
 <div class="items" id="items"></div>
 </body>
 </html>
@@ -128,10 +142,11 @@ main = function() {
   let widgets;
   widgets = getElementsByClassName(document, 'a', 'visasq-cards');
   return addOnloadHandler(function() {
-    let doc, iframe, itemRepository, itemsBlock, j, len, results, userid, username, widget;
+    let doc, iframe, itemRepository, itemsBlock, results, userid, username, widget;
     results = [];
-    for (j = 0, len = widgets.length; j < len; j++) {
-      widget = widgets[j];
+
+    widgets.map((widget) => {
+
       username = widget.getAttribute('data-visasq-username');
       userid = widget.getAttribute('data-visasq-userid');
       iframe = document.createElement('iframe');
@@ -144,31 +159,153 @@ main = function() {
       doc.open();
       doc.write(template);
       doc.close();
-      setInnerText(doc.getElementById('user_name'), username);
       itemsBlock = doc.getElementById('items');
       itemRepository = new ItemRepository();
-      results.push(itemRepository.findByUsername(userid, username, function(items) {
-        let item, itemElement, k, l, len1, len2, ref, tag, tagElement, title;
-        if (items.length > 0) {
-          // doc.getElementById('user_avatar').setAttribute('src', items[0].user.profileImageUrl);
-          // doc.getElementById('user_url').setAttribute('href', items[0].user.url);
-        }
-        for (k = 0, len1 = items.length; k < len1; k++) {
-          item = items[k];
+
+      results.push(itemRepository.load(userid, username, function(items) {
+        let item, itemElement, header, logo, info, end;
+
+        items.map((item) => {
           itemElement = document.createElement('div');
-          itemElement.setAttribute('class', 'item');
-          title = document.createElement('a');
-          setInnerText(title, item.title);
-          // title.setAttribute('href', item.url);
-          title.setAttribute('class', 'title');
-          title.setAttribute('target', '_blank');
-          itemElement.appendChild(title);
+          
+          header = document.createElement('div');
+          header.setAttribute('class', 'card--header');
+          itemElement.appendChild(header);
+
+          logo = document.createElement('div');
+          logo.setAttribute('class', 'icon-logo');
+          itemElement.appendChild(logo);
+
+          info = document.createElement('div');
+          info.setAttribute('class', 'info');
+          itemElement.appendChild(info);
+
+          if (item.__class__ === 'User') {
+
+            itemElement.setAttribute('class', 'card--user--widget');
+
+            let imageUrl = item.imageUrl,
+                userImage, text, name, job, companyName, title, description, end, button;
+            userImage = document.createElement('div');
+            userImage.setAttribute('class', 'user-img--s');
+            userImage.setAttribute('style', `background-image:url("${imageUrl}")`);
+            info.appendChild(userImage);
+            
+            text = document.createElement('div');
+            text.setAttribute('class', 'text');
+            info.appendChild(text);
+
+              name = document.createElement('h4');
+              setInnerText(name, item.displayName);
+              name.setAttribute('class', 'title');
+              text.appendChild(name);
+
+              job = document.createElement('p');
+              job.setAttribute('class', 'job');
+              text.appendChild(job);
+
+                companyName = document.createElement('span');
+                setInnerText(companyName, item.companyName);
+                job.appendChild(companyName);
+
+                title = document.createElement('span');
+                setInnerText(title, item.title);
+                job.appendChild(title);
+
+              description = document.createElement('p');
+              setInnerText(description, item.description);
+              text.setAttribute('class', 'descript');
+              text.appendChild(description);
+
+            end = document.createElement('div');
+            end.setAttribute('class', 'end');
+            itemElement.appendChild(end);
+
+              button = document.createElement('a');
+              button.setAttribute('class', 'button_blue');
+              setInnerText(button, 'ビザスクで相談');
+              end.appendChild(button);
+
+          } else if(item.__class__ === 'Topic') {
+
+            let imageUrl = item.imageUrl,
+                text, title, description, price, priceIcon;
+
+            itemElement.setAttribute('class', 'topic_item');
+            
+            text = document.createElement('div');
+            text.setAttribute('class', 'text');
+            info.appendChild(text);
+
+              title = document.createElement('h4');
+              setInnerText(title, item.title);
+              text.setAttribute('class', 'title');
+              text.appendChild(title);
+
+              description = document.createElement('p');
+              setInnerText(description, item.description);
+              text.setAttribute('class', 'descript');
+              text.appendChild(description);
+
+            price = document.createElement('span');
+            price.setAttribute('class', 'price');
+            info.appendChild(price);
+
+              priceIcon = document.createElement('i');
+              priceIcon.setAttribute('class', 'icon-money_e');
+              price.appendChild(priceIcon);
+
+            bottom = document.createElement('div');
+            bottom.setAttribute('class', 'bottom');
+            itemElement.appendChild(bottom);
+
+              liked = document.createElement('div');
+              liked.setAttribute('class', 'liked');
+              bottom.appendChild(liked);
+
+                likedStar = document.createElement('div');
+                likedStar.setAttribute('class', 'fa fa-star');
+                liked.appendChild(likedStar);
+
+                likedCount = document.createElement('div');
+                likedCount.setAttribute('class', 'like_count');
+                liked.appendChild(likedCount);
+
+              divider = document.createElement('div');
+              divider.setAttribute('class', 'divider user');
+              bottom.appendChild(divider);
+
+              userImage = document.createElement('div');
+              userImage.setAttribute('class', 'user-img--s');
+              userImage.setAttribute('style', `background-image:url("${imageUrl}")`);
+              info.appendChild(userImage);
+
+            name = document.createElement('div');
+            setInnerText(name, item.displayName);
+            name.setAttribute('class', 'name');
+            itemElement.appendChild(name);
+
+            end = document.createElement('div');
+            end.setAttribute('class', 'end');
+            itemElement.appendChild(end);
+
+              button = document.createElement('a');
+              button.setAttribute('class', 'button_blue');
+              setInnerText(button, 'ビザスクで相談');
+              end.appendChild(button);
+
+          }
+
           itemsBlock.appendChild(itemElement);
-        }
+
+        });
+
         iframe.style.display = 'block';
         return setIframeHeight(iframe);
       }));
-    }
+
+    });
+
     return results;
   });
 };

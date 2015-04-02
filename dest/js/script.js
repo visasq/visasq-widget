@@ -12,6 +12,11 @@ var addOnloadHandler = undefined,
     setInnerText = undefined,
     template = undefined;
 
+// const BASE_URL = 'https://service.visasq.com/';
+var BASE_URL = "http://localhost:8080/";
+var TOPICS_URL = "topics/";
+var USERS_URL = "users/";
+
 var ItemRepository = (function () {
   function ItemRepository() {
     _classCallCheck(this, ItemRepository);
@@ -20,24 +25,23 @@ var ItemRepository = (function () {
   }
 
   _createClass(ItemRepository, {
-    findByUsername: {
-      value: function findByUsername(userid, username, callback) {
+    load: {
+      value: function load(userid, username, callback) {
         var _this = this;
 
         if (username in this.itemContainer) {
           callback(this.itemContainer[username]);
           return;
         }
-        return corsRequest("http://localhost:8080/api/v3/users/" + userid + "/topics", function (rows) {
-          var j = undefined,
-              len = undefined,
-              row = undefined;
+        return corsRequest("" + BASE_URL + "" + USERS_URL + "" + userid, function (user) {
           _this.itemContainer[username] = [];
-          for (j = 0, len = rows.length; j < len; j++) {
-            row = rows[j];
-            _this.itemContainer[username].push(new Item(row));
-          }
-          return callback(_this.itemContainer[username]);
+          _this.itemContainer[username].push(new User(user.result));
+          return corsRequest("" + BASE_URL + "" + USERS_URL + "" + userid + "/" + TOPICS_URL, function (topics) {
+            topics.map(function (topic) {
+              _this.itemContainer[username].push(new Topic(topic));
+            });
+            return callback(_this.itemContainer[username]);
+          });
         });
       }
     }
@@ -46,15 +50,31 @@ var ItemRepository = (function () {
   return ItemRepository;
 })();
 
-var Item = function Item(item) {
-  _classCallCheck(this, Item);
+var Topic = function Topic(item) {
+  _classCallCheck(this, Topic);
 
-  var j = undefined,
-      len = undefined,
-      ref = undefined,
-      tag = undefined;
+  this.__class__ = "Topic";
+  var id = item.id;
   this.title = item.title;
-  this.url = item.url;
+  this.description = item.description;
+  this.blankPrice = item.blank_price;
+  this.price = item.price;
+  this.imageUrl = item.author.image_url;
+  this.displayName = item.author.display_name;
+  this.url = "" + BASE_URL + "" + USERS_URL + "" + id;
+};
+
+var User = function User(item) {
+  _classCallCheck(this, User);
+
+  this.__class__ = "User";
+  var id = item.id;
+  this.description = item.description;
+  this.imageUrl = item.image_url;
+  this.displayName = item.display_name;
+  this.companyName = item.positions[0].company_name;
+  this.title = item.positions[0].title;
+  this.url = "" + BASE_URL + "" + TOPICS_URL + "" + id;
 };
 
 corsRequest = function (url, callback) {
@@ -133,7 +153,7 @@ setInnerText = function (element, text) {
   }
 };
 
-template = "\n<!DOCTYPE html>\n<html lang=\"ja\">\n<head>\n<meta charset=\"utf-8\" />\n<style type=\"text/css\">\n<!--%css%-->\n</style>\n</head>\n<body>\n<div class=\"bar\">\n  <a href=\"http://qiita.com\" class=\"logo\" target=\"_blank\"></a>\n  <a href=\"\" class=\"user\" id=\"user_url\" target=\"_blank\">\n    <img class=\"avatar\" src=\"#\" id=\"user_avatar\">\n    <span class=\"username\" id=\"user_name\"></span>\n  </a>\n</div>\n<div class=\"items\" id=\"items\"></div>\n</body>\n</html>\n";
+template = "\n<!DOCTYPE html>\n<html lang=\"ja\">\n<head>\n<meta charset=\"utf-8\" />\n<style type=\"text/css\">\n<!--%css%-->\n</style>\n</head>\n<body>\n<div class=\"items\" id=\"items\"></div>\n</body>\n</html>\n";
 
 main = function () {
   var widgets = undefined;
@@ -143,15 +163,14 @@ main = function () {
         iframe = undefined,
         itemRepository = undefined,
         itemsBlock = undefined,
-        j = undefined,
-        len = undefined,
         results = undefined,
         userid = undefined,
         username = undefined,
         widget = undefined;
     results = [];
-    for (j = 0, len = widgets.length; j < len; j++) {
-      widget = widgets[j];
+
+    widgets.map(function (widget) {
+
       username = widget.getAttribute("data-visasq-username");
       userid = widget.getAttribute("data-visasq-userid");
       iframe = document.createElement("iframe");
@@ -164,42 +183,168 @@ main = function () {
       doc.open();
       doc.write(template);
       doc.close();
-      setInnerText(doc.getElementById("user_name"), username);
       itemsBlock = doc.getElementById("items");
       itemRepository = new ItemRepository();
-      results.push(itemRepository.findByUsername(userid, username, function (items) {
+
+      results.push(itemRepository.load(userid, username, function (items) {
         var item = undefined,
             itemElement = undefined,
-            k = undefined,
-            l = undefined,
-            len1 = undefined,
-            len2 = undefined,
-            ref = undefined,
-            tag = undefined,
-            tagElement = undefined,
-            title = undefined;
-        if (items.length > 0) {}
-        for (k = 0, len1 = items.length; k < len1; k++) {
-          item = items[k];
+            header = undefined,
+            logo = undefined,
+            info = undefined,
+            end = undefined;
+
+        items.map(function (item) {
           itemElement = document.createElement("div");
-          itemElement.setAttribute("class", "item");
-          title = document.createElement("a");
-          setInnerText(title, item.title);
-          // title.setAttribute('href', item.url);
-          title.setAttribute("class", "title");
-          title.setAttribute("target", "_blank");
-          itemElement.appendChild(title);
+
+          header = document.createElement("div");
+          header.setAttribute("class", "card--header");
+          itemElement.appendChild(header);
+
+          logo = document.createElement("div");
+          logo.setAttribute("class", "icon-logo");
+          itemElement.appendChild(logo);
+
+          info = document.createElement("div");
+          info.setAttribute("class", "info");
+          itemElement.appendChild(info);
+
+          if (item.__class__ === "User") {
+
+            itemElement.setAttribute("class", "card--user--widget");
+
+            var imageUrl = item.imageUrl,
+                _userImage = undefined,
+                text = undefined,
+                _name = undefined,
+                job = undefined,
+                companyName = undefined,
+                title = undefined,
+                description = undefined,
+                _end = undefined,
+                _button = undefined;
+            _userImage = document.createElement("div");
+            _userImage.setAttribute("class", "user-img--s");
+            _userImage.setAttribute("style", "background-image:url(\"" + imageUrl + "\")");
+            info.appendChild(_userImage);
+
+            text = document.createElement("div");
+            text.setAttribute("class", "text");
+            info.appendChild(text);
+
+            _name = document.createElement("h4");
+            setInnerText(_name, item.displayName);
+            _name.setAttribute("class", "title");
+            text.appendChild(_name);
+
+            job = document.createElement("p");
+            job.setAttribute("class", "job");
+            text.appendChild(job);
+
+            companyName = document.createElement("span");
+            setInnerText(companyName, item.companyName);
+            job.appendChild(companyName);
+
+            title = document.createElement("span");
+            setInnerText(title, item.title);
+            job.appendChild(title);
+
+            description = document.createElement("p");
+            setInnerText(description, item.description);
+            text.setAttribute("class", "descript");
+            text.appendChild(description);
+
+            _end = document.createElement("div");
+            _end.setAttribute("class", "end");
+            itemElement.appendChild(_end);
+
+            _button = document.createElement("a");
+            _button.setAttribute("class", "button_blue");
+            setInnerText(_button, "ビザスクで相談");
+            _end.appendChild(_button);
+          } else if (item.__class__ === "Topic") {
+
+            var imageUrl = item.imageUrl,
+                text = undefined,
+                title = undefined,
+                description = undefined,
+                price = undefined,
+                priceIcon = undefined;
+
+            itemElement.setAttribute("class", "topic_item");
+
+            text = document.createElement("div");
+            text.setAttribute("class", "text");
+            info.appendChild(text);
+
+            title = document.createElement("h4");
+            setInnerText(title, item.title);
+            text.setAttribute("class", "title");
+            text.appendChild(title);
+
+            description = document.createElement("p");
+            setInnerText(description, item.description);
+            text.setAttribute("class", "descript");
+            text.appendChild(description);
+
+            price = document.createElement("span");
+            price.setAttribute("class", "price");
+            info.appendChild(price);
+
+            priceIcon = document.createElement("i");
+            priceIcon.setAttribute("class", "icon-money_e");
+            price.appendChild(priceIcon);
+
+            bottom = document.createElement("div");
+            bottom.setAttribute("class", "bottom");
+            itemElement.appendChild(bottom);
+
+            liked = document.createElement("div");
+            liked.setAttribute("class", "liked");
+            bottom.appendChild(liked);
+
+            likedStar = document.createElement("div");
+            likedStar.setAttribute("class", "fa fa-star");
+            liked.appendChild(likedStar);
+
+            likedCount = document.createElement("div");
+            likedCount.setAttribute("class", "like_count");
+            liked.appendChild(likedCount);
+
+            divider = document.createElement("div");
+            divider.setAttribute("class", "divider user");
+            bottom.appendChild(divider);
+
+            userImage = document.createElement("div");
+            userImage.setAttribute("class", "user-img--s");
+            userImage.setAttribute("style", "background-image:url(\"" + imageUrl + "\")");
+            info.appendChild(userImage);
+
+            name = document.createElement("div");
+            setInnerText(name, item.displayName);
+            name.setAttribute("class", "name");
+            itemElement.appendChild(name);
+
+            end = document.createElement("div");
+            end.setAttribute("class", "end");
+            itemElement.appendChild(end);
+
+            button = document.createElement("a");
+            button.setAttribute("class", "button_blue");
+            setInnerText(button, "ビザスクで相談");
+            end.appendChild(button);
+          }
+
           itemsBlock.appendChild(itemElement);
-        }
+        });
+
         iframe.style.display = "block";
         return setIframeHeight(iframe);
       }));
-    }
+    });
+
     return results;
   });
 };
 
 main();
-
-// doc.getElementById('user_avatar').setAttribute('src', items[0].user.profileImageUrl);
-// doc.getElementById('user_url').setAttribute('href', items[0].user.url);
