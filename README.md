@@ -1,6 +1,8 @@
 # visasq-widget
 
-Visasq profile widget for your blog.
+visasQ profile widget for your blog.
+
+https://service.visasq.com
 
 ## Usage
 
