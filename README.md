@@ -6,7 +6,7 @@ https://service.visasq.com
 
 ## Usage
 
-Copy & Paste this source on your blog sidebar.
+Copy & Paste below on your blog sidebar.
 
 ```
 <a class="visasq-cards" href="https://service.visasq.com/[visasq-user-name-here]" data-visasq-userid="[visasq-user-id-here]" data-visasq-username="[visasq-user-name-here]">taizawaのカード一覧</a>
