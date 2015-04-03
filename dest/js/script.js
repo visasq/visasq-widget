@@ -13,7 +13,8 @@ var addOnloadHandler = undefined,
     template = undefined;
 
 // const BASE_URL = 'https://service.visasq.com/';
-var BASE_URL = "http://localhost:8080/";
+var BASE_URL = "https://service-stg.visasq.com/";
+// const BASE_URL = 'http://localhost:8080/';
 var TOPICS_PATH = "topics";
 var USERS_PATH = "users";
 var API_PATH = "api/v3/";
@@ -34,11 +35,12 @@ var ItemRepository = (function () {
           callback(this.itemContainer[username]);
           return;
         }
+
         return corsRequest("" + BASE_URL + "" + API_PATH + "" + USERS_PATH + "/" + userid, function (user) {
           _this.itemContainer[username] = [];
           _this.itemContainer[username].push(new User(user.result));
           return corsRequest("" + BASE_URL + "" + API_PATH + "" + USERS_PATH + "/" + userid + "/" + TOPICS_PATH, function (topics) {
-            topics.map(function (topic) {
+            topics.forEach(function (topic) {
               _this.itemContainer[username].push(new Topic(topic));
             });
             return callback(_this.itemContainer[username]);
@@ -154,7 +156,7 @@ setInnerText = function (element, text) {
   }
 };
 
-template = "\n<!DOCTYPE html>\n<html lang=\"ja\">\n<head>\n<meta charset=\"utf-8\" />\n<style type=\"text/css\">\n<!--%css%-->\n</style>\n</head>\n<body>\n<div class=\"items\" id=\"items\"></div>\n</body>\n<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js\"></script>\n<script src=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js\"></script>\n<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css\">\n</html>\n";
+template = "\n<!DOCTYPE html>\n<html lang=\"ja\">\n<head>\n<meta charset=\"utf-8\" />\n<style type=\"text/css\">\n<!--%css%-->\n</style>\n</head>\n<body>\n\n<div id=\"carousel\" class=\"carousel slide carousel-fade\">\n  <ol id=\"indicators\" class=\"carousel-indicators\"></ol>\n  <!-- Carousel items -->\n  <div class=\"items carousel-inner\" id=\"items\"></div>\n  <!-- Carousel nav -->\n  <a class=\"carousel-control left\" href=\"#carousel\" data-slide=\"prev\">&lsaquo;</a>\n  <a class=\"carousel-control right\" href=\"#carousel\" data-slide=\"next\">&rsaquo;</a>\n</div>\n\n</body>\n<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js\"></script>\n<script src=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js\"></script>\n<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css\">\n</html>\n";
 
 main = function () {
   var widgets = undefined;
@@ -163,6 +165,7 @@ main = function () {
     var doc = undefined,
         iframe = undefined,
         itemRepository = undefined,
+        indicatorsBlock = undefined,
         itemsBlock = undefined,
         results = undefined,
         userid = undefined,
@@ -170,7 +173,7 @@ main = function () {
         widget = undefined;
     results = [];
 
-    widgets.map(function (widget) {
+    widgets.forEach(function (widget) {
 
       username = widget.getAttribute("data-visasq-username");
       userid = widget.getAttribute("data-visasq-userid");
@@ -185,17 +188,19 @@ main = function () {
       doc.write(template);
       doc.close();
       itemsBlock = doc.getElementById("items");
+      indicatorsBlock = doc.getElementById("indicators");
       itemRepository = new ItemRepository();
 
       results.push(itemRepository.load(userid, username, function (items) {
         var item = undefined,
+            indicator = undefined,
             itemElement = undefined,
             header = undefined,
             logo = undefined,
-            info = undefined,
-            end = undefined;
+            info = undefined;
 
-        items.map(function (item) {
+        items.forEach(function (item) {
+
           itemElement = document.createElement("div");
 
           header = document.createElement("div");
@@ -212,7 +217,7 @@ main = function () {
 
           if (item.__class__ === "User") {
 
-            itemElement.setAttribute("class", "card--user--widget");
+            itemElement.setAttribute("class", "item active card--user--widget");
 
             var imageUrl = item.imageUrl,
                 userImage = undefined,
@@ -222,7 +227,7 @@ main = function () {
                 companyName = undefined,
                 title = undefined,
                 description = undefined,
-                _end = undefined,
+                end = undefined,
                 button = undefined;
 
             userImage = document.createElement("div");
@@ -256,14 +261,14 @@ main = function () {
             text.setAttribute("class", "descript");
             text.appendChild(description);
 
-            _end = document.createElement("div");
-            _end.setAttribute("class", "end");
-            itemElement.appendChild(_end);
+            end = document.createElement("div");
+            end.setAttribute("class", "end");
+            itemElement.appendChild(end);
 
             button = document.createElement("a");
             button.setAttribute("class", "button_blue");
             setInnerText(button, "ビザスクで相談");
-            _end.appendChild(button);
+            end.appendChild(button);
           } else if (item.__class__ === "Topic") {
 
             var imageUrl = item.imageUrl,
@@ -279,10 +284,10 @@ main = function () {
                 divider = undefined,
                 userImage = undefined,
                 _name2 = undefined,
-                _end2 = undefined,
+                end = undefined,
                 button = undefined;
 
-            itemElement.setAttribute("class", "topic_item");
+            itemElement.setAttribute("class", "item card--topic--widget");
 
             text = document.createElement("div");
             text.setAttribute("class", "text");
@@ -336,21 +341,29 @@ main = function () {
             _name2.setAttribute("class", "name");
             itemElement.appendChild(_name2);
 
-            _end2 = document.createElement("div");
-            _end2.setAttribute("class", "end");
-            itemElement.appendChild(_end2);
+            end = document.createElement("div");
+            end.setAttribute("class", "end");
+            itemElement.appendChild(end);
 
             button = document.createElement("a");
             button.setAttribute("class", "button_blue");
             setInnerText(button, "ビザスクで相談");
-            _end2.appendChild(button);
+            end.appendChild(button);
           }
 
           itemsBlock.appendChild(itemElement);
         });
 
         iframe.style.display = "block";
-        return setIframeHeight(iframe);
+
+        setIframeHeight(iframe);
+
+        setTimeout(function () {
+
+          $(".carousel").carousel({
+            interval: 2000
+          });
+        }, 2000);
       }));
     });
 

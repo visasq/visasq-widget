@@ -1,7 +1,8 @@
 let addOnloadHandler, corsRequest, getElementsByClassName, main, setIframeHeight, setInnerText, template;
 
 // const BASE_URL = 'https://service.visasq.com/';
-const BASE_URL = 'http://localhost:8080/';
+const BASE_URL = 'https://service-stg.visasq.com/';
+// const BASE_URL = 'http://localhost:8080/';
 const TOPICS_PATH = 'topics';
 const USERS_PATH = 'users';
 const API_PATH = 'api/v3/';
@@ -15,11 +16,12 @@ class ItemRepository {
       callback(this.itemContainer[username]);
       return;
     }
+
     return corsRequest(`${BASE_URL}${API_PATH}${USERS_PATH}/${userid}`, (user) => {
       this.itemContainer[username] = [];      
       this.itemContainer[username].push(new User(user.result));      
       return corsRequest(`${BASE_URL}${API_PATH}${USERS_PATH}/${userid}/${TOPICS_PATH}`, (topics) => {
-        topics.map((topic) => {
+        topics.forEach((topic) => {
           this.itemContainer[username].push(new Topic(topic));          
         });
         return callback(this.itemContainer[username]);
@@ -134,7 +136,16 @@ template = `
 </style>
 </head>
 <body>
-<div class="items" id="items"></div>
+
+<div id="carousel" class="carousel slide carousel-fade">
+  <ol id="indicators" class="carousel-indicators"></ol>
+  <!-- Carousel items -->
+  <div class="items carousel-inner" id="items"></div>
+  <!-- Carousel nav -->
+  <a class="carousel-control left" href="#carousel" data-slide="prev">&lsaquo;</a>
+  <a class="carousel-control right" href="#carousel" data-slide="next">&rsaquo;</a>
+</div>
+
 </body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
@@ -146,10 +157,10 @@ main = function() {
   let widgets;
   widgets = getElementsByClassName(document, 'a', 'visasq-cards');
   return addOnloadHandler(function() {
-    let doc, iframe, itemRepository, itemsBlock, results, userid, username, widget;
+    let doc, iframe, itemRepository, indicatorsBlock, itemsBlock, results, userid, username, widget;
     results = [];
 
-    widgets.map((widget) => {
+    widgets.forEach((widget) => {
 
       username = widget.getAttribute('data-visasq-username');
       userid = widget.getAttribute('data-visasq-userid');
@@ -164,12 +175,14 @@ main = function() {
       doc.write(template);
       doc.close();
       itemsBlock = doc.getElementById('items');
+      indicatorsBlock = doc.getElementById('indicators');
       itemRepository = new ItemRepository();
 
       results.push(itemRepository.load(userid, username, function(items) {
-        let item, itemElement, header, logo, info, end;
+        let item, indicator, itemElement, header, logo, info;
 
-        items.map((item) => {
+        items.forEach((item) => {
+
           itemElement = document.createElement('div');
           
           header = document.createElement('div');
@@ -186,7 +199,7 @@ main = function() {
 
           if (item.__class__ === 'User') {
 
-            itemElement.setAttribute('class', 'card--user--widget');
+            itemElement.setAttribute('class', 'item active card--user--widget');
 
             let imageUrl = item.imageUrl,
                 userImage, text, name, job, companyName,
@@ -239,7 +252,7 @@ main = function() {
                 bottom, liked, likedStar, likedCount, divider,
                 userImage, name, end, button;
 
-            itemElement.setAttribute('class', 'topic_item');
+            itemElement.setAttribute('class', 'item card--topic--widget');
             
             text = document.createElement('div');
             text.setAttribute('class', 'text');
@@ -309,7 +322,17 @@ main = function() {
         });
 
         iframe.style.display = 'block';
-        return setIframeHeight(iframe);
+
+        setIframeHeight(iframe);
+
+        setTimeout(() => {
+
+          $('.carousel').carousel({
+            interval: 2000
+          })
+
+        }, 2000)
+        
       }));
 
     });
