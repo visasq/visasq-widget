@@ -10,7 +10,7 @@ gulp.task('default', function () {
     .pipe(sourcemaps.init())
     .pipe(uglify())
     .pipe(sourcemaps.write('.'))
-    .pipe(gulp.dest('dest/js'));
+    .pipe(gulp.dest('dist/js'));
 });
 gulp.task('watch', function(){
     gulp.watch(src_dir, ['default']);
