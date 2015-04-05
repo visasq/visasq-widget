@@ -6,3 +6,9 @@
 
 # NPM dependencies
 /node_modules/
+
+# Bower directory
+/src/lib/components/
+
+# Cache directory
+/.sass-cache/

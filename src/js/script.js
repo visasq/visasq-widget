@@ -1,5 +1,5 @@
 let addOnloadHandler, corsRequest, getElementsByClassName, main, setIframeHeight, setInnerText, template;
-
+  
 // const BASE_URL = 'https://service.visasq.com/';
 const BASE_URL = 'https://service-stg.visasq.com/';
 // const BASE_URL = 'http://localhost:8080/';
@@ -131,6 +131,7 @@ template = `
 <html lang="ja">
 <head>
 <meta charset="utf-8" />
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
 <style type="text/css">
 <!--%css%-->
 </style>
@@ -149,7 +150,6 @@ template = `
 </body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
 </html>
 `;
 
