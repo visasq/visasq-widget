@@ -7,6 +7,35 @@ const TOPICS_PATH = 'topics';
 const USERS_PATH = 'users';
 const API_PATH = 'api/v3/';
 
+
+template = `
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="http://localhost:9090/dist/css/styles.css">
+<script async src="http://localhost:9090/dist/js/script.js"></script>
+<style type="text/css">
+<!--%css%-->
+</style>
+</head>
+<body>
+
+<div id="carousel" class="carousel slide carousel-fade">
+  <ol id="indicators" class="carousel-indicators"></ol>
+  <!-- Carousel items -->
+  <div class="items carousel-inner" id="items"></div>
+  <!-- Carousel nav -->
+  <a class="carousel-control left" href="#carousel" data-slide="prev">&lsaquo;</a>
+  <a class="carousel-control right" href="#carousel" data-slide="next">&rsaquo;</a>
+</div>
+
+</body>
+</html>
+`;
+
+
+
 class ItemRepository {
   constructor() {
     this.itemContainer = {};
@@ -125,33 +154,6 @@ setInnerText = function(element, text) {
     return element.innerText = text;
   }
 };
-
-template = `
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-<meta charset="utf-8" />
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
-<style type="text/css">
-<!--%css%-->
-</style>
-</head>
-<body>
-
-<div id="carousel" class="carousel slide carousel-fade">
-  <ol id="indicators" class="carousel-indicators"></ol>
-  <!-- Carousel items -->
-  <div class="items carousel-inner" id="items"></div>
-  <!-- Carousel nav -->
-  <a class="carousel-control left" href="#carousel" data-slide="prev">&lsaquo;</a>
-  <a class="carousel-control right" href="#carousel" data-slide="next">&rsaquo;</a>
-</div>
-
-</body>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-</html>
-`;
 
 main = function() {
   let widgets;

@@ -15,13 +15,13 @@ var gulp = require('gulp'),
 
 gulp.task('bower', function() { 
     return bower()
-         .pipe(gulp.dest(bowerDir)) 
+       .pipe(gulp.dest(bowerDir)) 
 });
 
 gulp.task('default', function () {
   return gulp.src([
-      bowerDir + bootstrapDir + '/javascripts/bootstrap.min.js',
       bowerDir + '/jquery/jquery.min.js',
+      bowerDir + bootstrapDir + '/javascripts/bootstrap.min.js',
       srcDir
     ])
     .pipe(babel())
