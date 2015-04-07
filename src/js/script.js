@@ -22,15 +22,17 @@ template = `
 </head>
 <body>
 
-<div class="card--header">
-  <a class="carousel-control left" href="#carousel" data-slide="prev"><i class="fa fa-angle-left"></i></a>
-  <a href="https://service.visasq.com/" target="_blank"><img src="https://rawgithub.com/visasq/visasq-widget/master/assets/img/logo.png" /></a>
-  <a class="carousel-control right" href="#carousel" data-slide="next"><i class="fa fa-angle-right"></i></a>
-</div>
-<div id="carousel" class="carousel slide carousel-fade">
-  <ol id="indicators" class="carousel-indicators"></ol>
-  <!-- Carousel items -->
-  <div class="items carousel-inner" id="items"></div>
+<div class="card--widget">
+  <div class="card--header">
+    <a class="carousel-control left" href="#carousel" data-slide="prev"><i class="fa fa-angle-left"></i></a>
+    <a href="https://service.visasq.com/" target="_blank"><img src="https://rawgithub.com/visasq/visasq-widget/master/assets/img/logo.png" /></a>
+    <a class="carousel-control right" href="#carousel" data-slide="next"><i class="fa fa-angle-right"></i></a>
+  </div>
+  <div id="carousel" class="carousel slide carousel-fade">
+    <ol id="indicators" class="carousel-indicators"></ol>
+    <!-- Carousel items -->
+    <div class="items carousel-inner" id="items"></div>
+  </div>
 </div>
 
 </body>
