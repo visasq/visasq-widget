@@ -1,3 +1,5 @@
+![visasq](http://visasq.co.jp/wp-content/themes/visasq/img/service/03.png)
+
 # visasq-widget
 
 visasQ profile widget for your blog.
@@ -6,7 +8,7 @@ https://service.visasq.com
 
 ## Usage
 
-Copy & Paste the code below into your blog sidebar.
+You can add this embed to your website by copying and pasting the HTML code below. 
 
 ```
 <a class="visasq-cards" href="https://service.visasq.com/[visasq-user-name-here]" data-visasq-userid="[visasq-user-id-here]" data-visasq-username="[visasq-user-name-here]">taizawaのカード一覧</a>
