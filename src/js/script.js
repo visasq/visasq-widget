@@ -24,7 +24,7 @@ template = `
 
 <div class="card--header">
   <a class="carousel-control left" href="#carousel" data-slide="prev"><i class="fa fa-angle-left"></i></a>
-  <a href="https://service.visasq.com/" target="_blank"><img src="http://localhost:9090/src/img/logo.png" /></a>
+  <a href="https://service.visasq.com/" target="_blank"><img src="https://rawgithub.com/visasq/visasq-widget/master/assets/img/logo.png" /></a>
   <a class="carousel-control right" href="#carousel" data-slide="next"><i class="fa fa-angle-right"></i></a>
 </div>
 <div id="carousel" class="carousel slide carousel-fade">
@@ -267,7 +267,7 @@ main = function() {
               text.appendChild(description);
 
             priceIcon = document.createElement('img');
-            priceIcon.setAttribute('src', 'http://localhost:9090/src/img/yen.png');
+            priceIcon.setAttribute('src', 'https://rawgithub.com/visasq/visasq-widget/master/assets/img/yen.png');
             priceIcon.setAttribute('class', 'price-icon');
             info.appendChild(priceIcon);
 
