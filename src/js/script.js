@@ -1,8 +1,8 @@
 let addOnloadHandler, corsRequest, getElementsByClassName, main, setIframeHeight, setInnerText, template;
-  
+
 // const BASE_URL = 'https://service.visasq.com/';
-const BASE_URL = 'https://service-stg.visasq.com/';
-// const BASE_URL = 'http://localhost:8080/';
+//const BASE_URL = 'https://service-stg.visasq.com/';
+const BASE_URL = 'http://localhost:8080/';
 const TOPICS_PATH = 'topics';
 const USERS_PATH = 'users';
 const API_PATH = 'api/v3/';
@@ -14,6 +14,7 @@ template = `
 <head>
 <meta charset="utf-8" />
 <link rel="stylesheet" href="http://localhost:9090/dist/css/styles.css">
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
 <script async src="http://localhost:9090/dist/js/script.js"></script>
 <style type="text/css">
 <!--%css%-->
@@ -21,13 +22,15 @@ template = `
 </head>
 <body>
 
+<div class="card--header">
+  <a class="carousel-control left" href="#carousel" data-slide="prev"><i class="fa fa-angle-left"></i></a>
+  <a href="https://service.visasq.com/" target="_blank"><img src="https://rawgithub.com/visasq/visasq-widget/master/assets/img/logo.png" /></a>
+  <a class="carousel-control right" href="#carousel" data-slide="next"><i class="fa fa-angle-right"></i></a>
+</div>
 <div id="carousel" class="carousel slide carousel-fade">
   <ol id="indicators" class="carousel-indicators"></ol>
   <!-- Carousel items -->
   <div class="items carousel-inner" id="items"></div>
-  <!-- Carousel nav -->
-  <a class="carousel-control left" href="#carousel" data-slide="prev">&lsaquo;</a>
-  <a class="carousel-control right" href="#carousel" data-slide="next">&rsaquo;</a>
 </div>
 
 </body>
@@ -47,11 +50,11 @@ class ItemRepository {
     }
 
     return corsRequest(`${BASE_URL}${API_PATH}${USERS_PATH}/${userid}`, (user) => {
-      this.itemContainer[username] = [];      
-      this.itemContainer[username].push(new User(user.result));      
+      this.itemContainer[username] = [];
+      this.itemContainer[username].push(new User(user.result));
       return corsRequest(`${BASE_URL}${API_PATH}${USERS_PATH}/${userid}/${TOPICS_PATH}`, (topics) => {
         topics.forEach((topic) => {
-          this.itemContainer[username].push(new Topic(topic));          
+          this.itemContainer[username].push(new Topic(topic));
         });
         return callback(this.itemContainer[username]);
       });
@@ -67,6 +70,7 @@ class Topic {
     this.description = item.description;
     this.blankPrice = item.blank_price;
     this.price = item.price;
+    this.likes = item.likes;
     this.imageUrl = item.author.image_url;
     this.displayName = item.author.display_name;
     this.url = `${BASE_URL}${USERS_PATH}/${id}`;
@@ -181,19 +185,11 @@ main = function() {
       itemRepository = new ItemRepository();
 
       results.push(itemRepository.load(userid, username, function(items) {
-        let item, indicator, itemElement, header, logo, info;
+        let item, indicator, itemElement, logo, info;
 
         items.forEach((item) => {
 
           itemElement = document.createElement('div');
-          
-          header = document.createElement('div');
-          header.setAttribute('class', 'card--header');
-          itemElement.appendChild(header);
-
-          logo = document.createElement('div');
-          logo.setAttribute('class', 'icon-logo');
-          itemElement.appendChild(logo);
 
           info = document.createElement('div');
           info.setAttribute('class', 'info');
@@ -211,7 +207,7 @@ main = function() {
             userImage.setAttribute('class', 'user-img--s');
             userImage.setAttribute('style', `background-image:url("${imageUrl}")`);
             info.appendChild(userImage);
-            
+
             text = document.createElement('div');
             text.setAttribute('class', 'text');
             info.appendChild(text);
@@ -235,7 +231,7 @@ main = function() {
 
               description = document.createElement('p');
               setInnerText(description, item.description);
-              text.setAttribute('class', 'descript');
+              description.setAttribute('class', 'descript');
               text.appendChild(description);
 
             end = document.createElement('div');
@@ -255,28 +251,35 @@ main = function() {
                 userImage, name, end, button;
 
             itemElement.setAttribute('class', 'item card--topic--widget');
-            
+
             text = document.createElement('div');
             text.setAttribute('class', 'text');
             info.appendChild(text);
 
               title = document.createElement('h4');
               setInnerText(title, item.title);
-              text.setAttribute('class', 'title');
+              title.setAttribute('class', 'title');
               text.appendChild(title);
 
               description = document.createElement('p');
               setInnerText(description, item.description);
-              text.setAttribute('class', 'descript');
+              description.setAttribute('class', 'descript');
               text.appendChild(description);
+
+            priceIcon = document.createElement('img');
+            priceIcon.setAttribute('src', 'https://rawgithub.com/visasq/visasq-widget/master/assets/img/yen.png');
+            priceIcon.setAttribute('class', 'price-icon');
+            info.appendChild(priceIcon);
 
             price = document.createElement('span');
             price.setAttribute('class', 'price');
+            if (item.blankPrice) {
+              setInnerText(price, "問い合わせ");
+            } else {
+              setInnerText(price, item.price + " 〜");
+            }
+            price.setAttribute('class', 'price');
             info.appendChild(price);
-
-              priceIcon = document.createElement('i');
-              priceIcon.setAttribute('class', 'icon-money_e');
-              price.appendChild(priceIcon);
 
             bottom = document.createElement('div');
             bottom.setAttribute('class', 'bottom');
@@ -292,6 +295,7 @@ main = function() {
 
                 likedCount = document.createElement('div');
                 likedCount.setAttribute('class', 'like_count');
+                setInnerText(likedCount, item.likes);
                 liked.appendChild(likedCount);
 
               divider = document.createElement('div');
@@ -299,9 +303,9 @@ main = function() {
               bottom.appendChild(divider);
 
               userImage = document.createElement('div');
-              userImage.setAttribute('class', 'user-img--s');
+              userImage.setAttribute('class', 'user-img--min');
               userImage.setAttribute('style', `background-image:url("${imageUrl}")`);
-              info.appendChild(userImage);
+              bottom.appendChild(userImage);
 
             name = document.createElement('div');
             setInnerText(name, item.displayName);
@@ -334,7 +338,7 @@ main = function() {
           })
 
         }, 2000)
-        
+
       }));
 
     });
