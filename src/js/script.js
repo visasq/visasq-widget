@@ -1,8 +1,8 @@
 let addOnloadHandler, corsRequest, getElementsByClassName, main, setIframeHeight, setInnerText, template;
 
 // const BASE_URL = 'https://service.visasq.com/';
-//const BASE_URL = 'https://service-stg.visasq.com/';
-const BASE_URL = 'http://localhost:8080/';
+const BASE_URL = 'https://service-stg.visasq.com/';
+// const BASE_URL = 'http://localhost:8080/';
 const TOPICS_PATH = 'topics';
 const USERS_PATH = 'users';
 const API_PATH = 'api/v3/';
