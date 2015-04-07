@@ -1,4 +1,4 @@
-
+![visasq](http://visasq.co.jp/wp-content/themes/visasq/img/service/03.png)
 
 # visasq-widget
 
