@@ -10,6 +10,10 @@ body {
   font-color: #222222;
 }
 
+a {
+  text-decoration: none !important;
+}
+
 .card--widget {
 
   width: $card-w;

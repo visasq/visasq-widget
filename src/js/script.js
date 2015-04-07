@@ -29,7 +29,6 @@ template = `
     <a class="carousel-control right" href="#carousel" data-slide="next"><i class="fa fa-angle-right"></i></a>
   </div>
   <div id="carousel" class="carousel slide carousel-fade">
-    <ol id="indicators" class="carousel-indicators"></ol>
     <!-- Carousel items -->
     <div class="items carousel-inner" id="items"></div>
   </div>
@@ -165,7 +164,7 @@ main = function() {
   let widgets;
   widgets = getElementsByClassName(document, 'a', 'visasq-cards');
   return addOnloadHandler(function() {
-    let doc, iframe, itemRepository, indicatorsBlock, itemsBlock, results, userid, username, widget;
+    let doc, iframe, itemRepository, itemsBlock, results, userid, username, widget;
     results = [];
 
     widgets.forEach((widget) => {
@@ -183,15 +182,24 @@ main = function() {
       doc.write(template);
       doc.close();
       itemsBlock = doc.getElementById('items');
-      indicatorsBlock = doc.getElementById('indicators');
       itemRepository = new ItemRepository();
 
       results.push(itemRepository.load(userid, username, function(items) {
-        let item, indicator, itemElement, logo, info;
+        let item, itemType, id, itemLink, url, itemElement, logo, info;
 
         items.forEach((item) => {
 
+          itemLink = document.createElement('a');
+          itemLink.setAttribute('target', '_blank');
+          itemType = (item.__class__ === 'User') ? USERS_PATH : TOPICS_PATH;
+          id = item.id;
+          url = `${BASE_URL}${itemType}/${id}`
+          console.log(url);
+          itemLink.setAttribute('href', url);
+          itemsBlock.appendChild(itemLink);
+
           itemElement = document.createElement('div');
+          itemLink.appendChild(itemElement);
 
           info = document.createElement('div');
           info.setAttribute('class', 'info');
@@ -199,7 +207,7 @@ main = function() {
 
           if (item.__class__ === 'User') {
 
-            itemElement.setAttribute('class', 'item active card--user--widget');
+            itemLink.setAttribute('class', 'item active card--user--widget');
 
             let imageUrl = item.imageUrl,
                 userImage, text, name, job, companyName,
@@ -252,7 +260,7 @@ main = function() {
                 bottom, liked, likedStar, likedCount, divider,
                 userImage, name, end, button;
 
-            itemElement.setAttribute('class', 'item card--topic--widget');
+            itemLink.setAttribute('class', 'item card--topic--widget');
 
             text = document.createElement('div');
             text.setAttribute('class', 'text');
@@ -324,8 +332,6 @@ main = function() {
               end.appendChild(button);
 
           }
-
-          itemsBlock.appendChild(itemElement);
 
         });
 
