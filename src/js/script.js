@@ -68,7 +68,7 @@ class Topic {
     this.likes = item.likes;
     this.imageUrl = item.author.image_url;
     this.displayName = item.author.display_name;
-    this.url = `${BASE_URL}${USERS_PATH}/${id}`;
+    this.url = `${BASE_URL}${TOPICS_PATH}/${id}`;
   }
 }
 
