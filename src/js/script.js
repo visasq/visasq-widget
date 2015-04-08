@@ -81,7 +81,7 @@ class User {
     this.displayName = item.display_name;
     this.companyName = item.positions[0].company_name;
     this.title = item.positions[0].title;
-    this.url = `${BASE_URL}${TOPICS_PATH}/${id}`
+    this.url = `${BASE_URL}${USERS_PATH}/${id}`
   }
 }
 
