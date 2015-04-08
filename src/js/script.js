@@ -4,7 +4,7 @@ const BASE_URL = 'https://service.visasq.com/';
 const TOPICS_PATH = 'topics';
 const USERS_PATH = 'users';
 const API_PATH = 'api/v3/';
-const CSS_PATH = 'https://rawgithub.com/visasq/visasq-widget/dist/css/styles.css';
+const CSS_PATH = 'https://rawgithub.com/visasq/visasq-widget/master/dist/css/styles.css';
 
 template = `
 <!DOCTYPE html>
