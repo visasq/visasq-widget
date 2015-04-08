@@ -5,7 +5,6 @@ const TOPICS_PATH = 'topics';
 const USERS_PATH = 'users';
 const API_PATH = 'api/v3/';
 const CSS_PATH = 'https://rawgithub.com/visasq/visasq-widget/dist/css/styles.css';
-const SCRIPT_PATH = 'https://rawgithub.com/visasq/visasq-widget/dist/js/script.js';
 
 template = `
 <!DOCTYPE html>
@@ -14,7 +13,6 @@ template = `
 <meta charset="utf-8" />
 <link rel="stylesheet" href="${CSS_PATH}">
 <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-<script async src="${SCRIPT_PATH}"></script>
 </head>
 <body>
 
