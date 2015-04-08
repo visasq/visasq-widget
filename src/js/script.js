@@ -1,24 +1,20 @@
 let addOnloadHandler, corsRequest, getElementsByClassName, main, setIframeHeight, setInnerText, template;
 
-// const BASE_URL = 'https://service.visasq.com/';
-const BASE_URL = 'https://service-stg.visasq.com/';
-// const BASE_URL = 'http://localhost:8080/';
+const BASE_URL = 'https://service.visasq.com/';
 const TOPICS_PATH = 'topics';
 const USERS_PATH = 'users';
 const API_PATH = 'api/v3/';
-
+const CSS_PATH = 'https://rawgithub.com/visasq/visasq-widget/dist/css/styles.css';
+const SCRIPT_PATH = 'https://rawgithub.com/visasq/visasq-widget/dist/js/script.js';
 
 template = `
 <!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="utf-8" />
-<link rel="stylesheet" href="http://localhost:9090/dist/css/styles.css">
+<link rel="stylesheet" href="${CSS_PATH}">
 <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-<script async src="http://localhost:9090/dist/js/script.js"></script>
-<style type="text/css">
-<!--%css%-->
-</style>
+<script async src="${SCRIPT_PATH}"></script>
 </head>
 <body>
 
@@ -191,11 +187,7 @@ main = function() {
 
           itemLink = document.createElement('a');
           itemLink.setAttribute('target', '_blank');
-          itemType = (item.__class__ === 'User') ? USERS_PATH : TOPICS_PATH;
-          id = item.id;
-          url = `${BASE_URL}${itemType}/${id}`
-          console.log(url);
-          itemLink.setAttribute('href', url);
+          itemLink.setAttribute('href', item.url);
           itemsBlock.appendChild(itemLink);
 
           itemElement = document.createElement('div');
