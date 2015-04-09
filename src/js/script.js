@@ -13,20 +13,17 @@ template = `
 <meta charset="utf-8" />
 <link rel="stylesheet" href="${CSS_PATH}">
 <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-<script src="${LIB_PATH}"></script>
-<style type="text/css">
-<!--%css%-->
-</style>
+<script async src="${LIB_PATH}"></script>
 </head>
 <body>
 
 <div class="card--widget">
-  <div class="card--header">
-    <a class="carousel-control left" href="#carousel" data-slide="prev"><i class="fa fa-angle-left"></i></a>
-    <a href="https://service.visasq.com/" target="_blank"><img src="https://rawgithub.com/visasq/visasq-widget/master/assets/img/logo.png" /></a>
-    <a class="carousel-control right" href="#carousel" data-slide="next"><i class="fa fa-angle-right"></i></a>
-  </div>
   <div id="carousel" class="carousel slide carousel-fade">
+    <div class="card--header">
+      <a class="carousel-control left" href="#carousel" data-slide="prev"><i class="fa fa-angle-left"></i></a>
+      <a href="https://service.visasq.com/" target="_blank"><img src="https://rawgithub.com/visasq/visasq-widget/master/assets/img/logo.png" /></a>
+      <a class="carousel-control right" href="#carousel" data-slide="next"><i class="fa fa-angle-right"></i></a>
+    </div>
     <ol id="indicators" class="carousel-indicators"></ol>
     <!-- Carousel items -->
     <div class="items carousel-inner" id="items"></div>
@@ -36,6 +33,7 @@ template = `
 </body>
 </html>
 `;
+
 
 
 
@@ -332,12 +330,11 @@ main = function() {
 
         iframe.style.display = 'block';
 
-        setIframeHeight(iframe);
-
         setTimeout(() => {
 
-          $('.carousel').carousel({
-            interval: 2000
+          setIframeHeight(iframe);
+          $('.carousel', doc.body).carousel({
+            interval: 3000
           })
 
         }, 2000)
