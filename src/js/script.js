@@ -18,7 +18,7 @@ template = `
 </style>
 </head>
 <body>
-testest
+
 <div class="card--widget">
   <div class="card--header">
     <a class="carousel-control left" href="#carousel" data-slide="prev"><i class="fa fa-angle-left"></i></a>
@@ -26,6 +26,7 @@ testest
     <a class="carousel-control right" href="#carousel" data-slide="next"><i class="fa fa-angle-right"></i></a>
   </div>
   <div id="carousel" class="carousel slide carousel-fade">
+    <ol id="indicators" class="carousel-indicators"></ol>
     <!-- Carousel items -->
     <div class="items carousel-inner" id="items"></div>
   </div>
