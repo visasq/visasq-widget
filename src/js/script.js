@@ -11,9 +11,8 @@ template = `
 <html lang="ja">
 <head>
 <meta charset="utf-8" />
-<link rel="stylesheet" href="http://localhost:9090/dist/css/styles.css">
+<link rel="stylesheet" href="${CSS_PATH}">
 <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-<script async src="http://localhost:9090/dist/js/script.js"></script>
 <style type="text/css">
 <!--%css%-->
 </style>
