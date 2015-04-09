@@ -1,11 +1,12 @@
 let addOnloadHandler, corsRequest, getElementsByClassName, main, setIframeHeight, setInnerText, template;
 
-const BASE_URL = 'https://service.visasq.com/';
+// const BASE_URL = 'https://service.visasq.com/';
+const BASE_URL = 'http://localhost:8080/';
 const TOPICS_PATH = 'topics';
 const USERS_PATH = 'users';
 const API_PATH = 'api/v3/';
 const CSS_PATH = 'https://rawgithub.com/visasq/visasq-widget/master/dist/css/styles.css';
-
+const LIB_PATH = 'https://rawgithub.com/visasq/visasq-widget/master/dist/js/lib.js';
 template = `
 <!DOCTYPE html>
 <html lang="ja">
@@ -13,6 +14,7 @@ template = `
 <meta charset="utf-8" />
 <link rel="stylesheet" href="${CSS_PATH}">
 <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+<script src="${LIB_PATH}"></script>
 <style type="text/css">
 <!--%css%-->
 </style>

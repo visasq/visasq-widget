@@ -19,20 +19,35 @@ gulp.task('bower', function() { 
 });
 
 gulp.task('default', function () {
+
   return gulp.src([
-      bowerDir + '/jquery/jquery.min.js',
-      bowerDir + bootstrapDir + '/javascripts/bootstrap.min.js',
       srcDir
     ])
     .pipe(babel())
-    .pipe(concat('script.js'))
     .pipe(sourcemaps.init())
     .pipe(uglify().on('error', notify.onError(function (error) {
         return 'Error: ' + error.message;
     })))
     .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest(distDir));
+
 });
+
+gulp.task('lib', function () {
+
+  return gulp.src([
+      bowerDir + '/jquery/jquery.min.js',
+      bowerDir + bootstrapDir + '/javascripts/bootstrap.min.js'
+    ])
+    .pipe(concat('lib.js'))
+    .pipe(uglify().on('error', notify.onError(function (error) {
+        return 'Error: ' + error.message;
+    })))
+    .pipe(gulp.dest(distDir));
+
+});
+
+
 
 gulp.task('watch', function(){
     gulp.watch(srcDir, ['default']);
@@ -55,4 +70,4 @@ gulp.task('css', function() { 
 });
 
 gulp.task('init', ['bower']);
-gulp.task('release', ['css', 'default']);
+gulp.task('release', ['css', 'lib', 'default']);
