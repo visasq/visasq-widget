@@ -12,3 +12,5 @@
 
 # Cache directory
 /.sass-cache/
+
+.idea/

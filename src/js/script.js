@@ -1,3 +1,5 @@
+(function () {
+
 let addOnloadHandler, corsRequest, getElementsByClassName, main, setIframeHeight, setInnerText, template;
 
 const BASE_URL = 'https://service.visasq.com/';
@@ -337,7 +339,7 @@ main = function() {
             interval: 3000
           })
 
-        }, 2000)
+        }, 50)
 
       }));
 
@@ -348,3 +350,5 @@ main = function() {
 };
 
 main();
+
+})();
