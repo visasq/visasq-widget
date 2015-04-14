@@ -6,7 +6,7 @@ $card-lh: 13px;
 
 body {
   background-color: transparent;
-  font-size: 10px;
+  font-size: 11px;
   font-color: #222222;
 }
 
@@ -39,7 +39,7 @@ a {
 }
 
 
-.card--header {
+#header {
   position: relative;
   background: #265587;
   text-align: center;
@@ -87,6 +87,9 @@ a {
 %card {
   width: $card-w;
   height: $card-h;
+
+  border: 1px solid #cccccc;
+  border-top: none;
 
   background: #ffffff;
   float: left;
@@ -205,10 +208,10 @@ a {
     padding: 10px 0;
     height: 43px;
 
-    .button_blue {
+    .button {
 
       cursor: pointer;
-      background: #3d8bce;
+      background: #265587;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
       font-weight: bold;
@@ -225,9 +228,10 @@ a {
       padding: 4px 0;
       width: 80% !important;
       transition: 0.3s;
+      opacity: 0.9;
 
       &:hover {
-        opacity: 0.8;
+        opacity: 0.7;
       }
     }
   }
@@ -238,8 +242,6 @@ a {
 .card--user--widget {
 
   @extend %card;
-  border: 1px solid #cccccc;
-  border-top: 3px solid #ee8888;
 
   .card--inner {
     padding: 5px;
@@ -253,7 +255,7 @@ a {
       color: #aaaaaa;
       content: "…";
       position: absolute;
-      bottom: 46px;
+      bottom: 50px;
       right: 13px;
       background: #ffffff;
     }
@@ -264,8 +266,8 @@ a {
     }
 
     .job {
+      color: #333333;
       transition: 0.3s;
-      font-size: 10px;
       line-height: $card-lh;
       margin-bottom: $card-lh;
       text-align: center;
@@ -277,7 +279,6 @@ a {
 
     .descript {
       transition: 0.3s;
-      font-size: 10px;
       line-height: $card-lh;
     }
 
@@ -298,9 +299,6 @@ a {
 .card--topic--widget {
 
   @extend %card;
-
-  border: 1px solid #cccccc;
-  border-top: 3px solid #94AA62;
 
   .text {
     $card-lh: 13px;
@@ -325,7 +323,6 @@ a {
 
     .descript {
       transition: 0.3s;
-      font-size: 10px;
       line-height: $card-lh;
     }
   }

@@ -14,6 +14,7 @@ template = `
 <head>
 <meta charset="utf-8" />
 <link rel="stylesheet" href="${CSS_PATH}">
+<link rel="stylesheet" href="http://localhost:9090/dist/css/styles.css">
 <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
 <script async src="${LIB_PATH}"></script>
 </head>
@@ -21,7 +22,7 @@ template = `
 
 <div class="card--widget">
   <div id="carousel" class="carousel slide carousel-fade">
-    <div class="card--header">
+    <div id="header">
       <a class="carousel-control left" href="#carousel" data-slide="prev"><i class="fa fa-angle-left"></i></a>
       <a href="https://service.visasq.com/" target="_blank"><img src="https://rawgithub.com/visasq/visasq-widget/master/assets/img/logo.png" /></a>
       <a class="carousel-control right" href="#carousel" data-slide="next"><i class="fa fa-angle-right"></i></a>
@@ -162,8 +163,8 @@ setInnerText = function(element, text) {
 main = function() {
   let widgets;
   widgets = getElementsByClassName(document, 'a', 'visasq-cards');
-  return addOnloadHandler(function() {
-    let doc, iframe, itemRepository, itemsBlock, results, userid, username, width, widget;
+  (function() {
+    let doc, iframe, itemRepository, itemsBlock, results, userid, username, header, width, color, widget;
     results = [];
 
     widgets.forEach((widget) => {
@@ -171,6 +172,7 @@ main = function() {
       username = widget.getAttribute('data-visasq-username');
       userid = widget.getAttribute('data-visasq-userid');
       width = widget.getAttribute('width');
+      color = widget.getAttribute('color');
       iframe = document.createElement('iframe');
       iframe.style.display = 'none';
       iframe.setAttribute("frameBorder", "0");
@@ -183,6 +185,9 @@ main = function() {
       doc.close();
       itemsBlock = doc.getElementById('items');
       itemRepository = new ItemRepository();
+
+      header = doc.getElementById('header');
+      header.style.background = color;
 
       results.push(itemRepository.load(userid, username, function(items) {
         let item, itemType, id, itemLink, url, itemElement, logo, info;
@@ -245,7 +250,8 @@ main = function() {
             itemElement.appendChild(end);
 
               button = document.createElement('a');
-              button.setAttribute('class', 'button_blue');
+              button.setAttribute('class', 'button');
+              button.style.background = color;
               setInnerText(button, 'ビザスクで相談');
               end.appendChild(button);
 
@@ -323,7 +329,8 @@ main = function() {
             itemElement.appendChild(end);
 
               button = document.createElement('a');
-              button.setAttribute('class', 'button_blue');
+              button.setAttribute('class', 'button');
+              button.style.background = color;
               setInnerText(button, 'ビザスクで相談');
               end.appendChild(button);
 
@@ -347,9 +354,9 @@ main = function() {
     });
 
     return results;
-  });
+  })();
 };
 
-main();
+$(document).ready(function(){main()})
 
 })();
