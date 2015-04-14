@@ -133,14 +133,6 @@ getElementsByClassName = function(oElm, strTagName, strClassName) {
   return arrReturnElements;
 };
 
-addOnloadHandler = function(newFunction) {
-  if (window.addEventListener) {
-    return window.addEventListener('load', newFunction, false);
-  } else if (window.attachEvent) {
-    return window.attachEvent('onload', newFunction);
-  }
-};
-
 setIframeHeight = function(iframe) {
   let iframeWin;
   if (iframe) {
