@@ -163,17 +163,18 @@ main = function() {
   let widgets;
   widgets = getElementsByClassName(document, 'a', 'visasq-cards');
   return addOnloadHandler(function() {
-    let doc, iframe, itemRepository, itemsBlock, results, userid, username, widget;
+    let doc, iframe, itemRepository, itemsBlock, results, userid, username, width, widget;
     results = [];
 
     widgets.forEach((widget) => {
 
       username = widget.getAttribute('data-visasq-username');
       userid = widget.getAttribute('data-visasq-userid');
+      width = widget.getAttribute('width');
       iframe = document.createElement('iframe');
       iframe.style.display = 'none';
       iframe.setAttribute("frameBorder", "0");
-      iframe.style.width = '100%';
+      iframe.style.width = width;
       widget.parentNode.appendChild(iframe);
       widget.style.display = 'none';
       doc = frames[frames.length - 1].document;
