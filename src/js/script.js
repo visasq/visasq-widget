@@ -162,7 +162,7 @@ setInnerText = function(element, text) {
 main = function() {
   let widgets;
   widgets = getElementsByClassName(document, 'a', 'visasq-cards');
-  return addOnloadHandler(function() {
+  (function() {
     let doc, iframe, itemRepository, itemsBlock, results, userid, username, widget;
     results = [];
 
@@ -346,9 +346,9 @@ main = function() {
     });
 
     return results;
-  });
+  })();
 };
 
-main();
+$(document).ready(function(){main()})
 
 })();
