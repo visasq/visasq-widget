@@ -322,7 +322,7 @@ main = function() {
               button = document.createElement('a');
               button.setAttribute('class', 'button');
               button.style.background = color;
-              setInnerText(button, 'ビザスクで相談');
+              setInnerText(button, 'スポットコンサルへ');
               end.appendChild(button);
 
           }
