@@ -348,6 +348,6 @@ main = function() {
   })();
 };
 
-$(document).ready(function(){main()})
+jQuery(document).ready(function(){main()})
 
 })();
