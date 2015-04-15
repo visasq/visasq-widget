@@ -20,9 +20,12 @@ gulp.task('bower', function() { 
 
 gulp.task('default', function () {
   return gulp.src([
-      srcDir
+      srcDir,
+      bowerDir + '/jquery/jquery.min.js',
+      bowerDir + bootstrapDir + '/javascripts/bootstrap.min.js'
     ])
     .pipe(babel())
+    .pipe(concat('script.js'))
     .pipe(sourcemaps.init())
     .pipe(uglify().on('error', notify.onError(function (error) {
         return 'Error: ' + error.message;
@@ -62,4 +65,4 @@ gulp.task('css', function() { 
 });
 
 gulp.task('init', ['bower']);
-gulp.task('release', ['css', 'lib', 'default']);
+gulp.task('release', ['css', 'default']);
