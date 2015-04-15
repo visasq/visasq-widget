@@ -26,11 +26,6 @@ gulp.task('default', function () {
     ])
     .pipe(babel())
     .pipe(concat('script.js'))
-    .pipe(sourcemaps.init())
-    .pipe(uglify().on('error', notify.onError(function (error) {
-        return 'Error: ' + error.message;
-    })))
-    .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest(distDir));
 });
 
