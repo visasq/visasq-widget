@@ -20,9 +20,9 @@ gulp.task('bower', function() { 
 
 gulp.task('default', function () {
   return gulp.src([
-      srcDir,
       bowerDir + '/jquery/jquery.min.js',
-      bowerDir + bootstrapDir + '/javascripts/bootstrap.min.js'
+      bowerDir + bootstrapDir + '/javascripts/bootstrap.min.js',
+      srcDir
     ])
     .pipe(babel())
     .pipe(concat('script.js'))
