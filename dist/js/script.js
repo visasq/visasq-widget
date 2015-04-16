@@ -3040,7 +3040,9 @@ var _classCallCheck = function (instance, Constructor) { if (!(instance instance
               if (item.blankPrice) {
                 setInnerText(price, "問い合わせ");
               } else {
-                setInnerText(price, item.price + " 〜");
+                if (item.price) {
+                  setInnerText(price, item.price + " 〜");
+                }
               }
               price.setAttribute("class", "price");
               info.appendChild(price);
