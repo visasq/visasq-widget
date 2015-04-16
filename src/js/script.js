@@ -7,6 +7,7 @@ const TOPICS_PATH = 'topics';
 const USERS_PATH = 'users';
 const API_PATH = 'api/v3/';
 const CSS_PATH = 'https://rawgithub.com/visasq/visasq-widget/master/dist/css/styles.css';
+const LIB_PATH = 'https://rawgithub.com/visasq/visasq-widget/master/dist/js/lib.js';
 template = `
 <!DOCTYPE html>
 <html lang="ja">
@@ -14,6 +15,7 @@ template = `
 <meta charset="utf-8" />
 <link rel="stylesheet" href="${CSS_PATH}">
 <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+<script async src="${LIB_PATH}"></script>
 </head>
 <body>
 

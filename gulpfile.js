@@ -29,6 +29,16 @@ gulp.task('default', function () {
     .pipe(gulp.dest(distDir));
 });
 
+gulp.task('lib', function () {
+  return gulp.src([
+      bowerDir + '/jquery/jquery.min.js',
+      bowerDir + bootstrapDir + '/javascripts/bootstrap.min.js'
+    ])
+    .pipe(concat('lib.js'))
+    .pipe(gulp.dest(distDir));
+});
+
+
 gulp.task('watch', function(){
     gulp.watch(srcDir, ['default']);
     gulp.watch(sassDir + '/**/*.scss', ['css']);
@@ -50,4 +60,4 @@ gulp.task('css', function() { 
 });
 
 gulp.task('init', ['bower']);
-gulp.task('release', ['css', 'default']);
+gulp.task('release', ['css', 'lib', 'default']);
