@@ -84,8 +84,10 @@ class User {
     this.description = item.description;
     this.imageUrl = item.image_url;
     this.displayName = item.display_name;
-    this.companyName = item.positions[0].company_name;
-    this.title = item.positions[0].title;
+    if (item.positions[0]) {
+        this.companyName = item.positions[0].company_name;
+        this.title = item.positions[0].title;
+    }
     this.url = `${BASE_URL}${USERS_PATH}/${id}`
   }
 }
