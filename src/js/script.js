@@ -23,7 +23,7 @@ template = `
   <div id="carousel" class="carousel slide carousel-fade">
     <div id="header">
       <a class="carousel-control left" href="#carousel" data-slide="prev"><i class="fa fa-angle-left"></i></a>
-      <a href="https://service.visasq.com/" target="_blank"><img src="https://rawgithub.com/visasq/visasq-widget/master/assets/img/logo.png" /></a>
+      <a href="https://service.visasq.com/" target="_blank"><img src="https://rawgithub.com/visasq/visasq-widget/v1/assets/img/logo.png" /></a>
       <a class="carousel-control right" href="#carousel" data-slide="next"><i class="fa fa-angle-right"></i></a>
     </div>
     <ol id="indicators" class="carousel-indicators"></ol>
@@ -245,7 +245,7 @@ main = function() {
               button = document.createElement('a');
               button.setAttribute('class', 'button');
               button.style.background = color;
-              setInnerText(button, 'ビザスクで相談');
+              setInnerText(button, 'スポットコンサルへ');
               end.appendChild(button);
 
           } else if(item.__class__ === 'Topic') {
@@ -272,7 +272,7 @@ main = function() {
               text.appendChild(description);
 
             priceIcon = document.createElement('img');
-            priceIcon.setAttribute('src', 'https://rawgithub.com/visasq/visasq-widget/master/assets/img/yen.png');
+            priceIcon.setAttribute('src', 'https://rawgithub.com/visasq/visasq-widget/v1/assets/img/yen.png');
             priceIcon.setAttribute('class', 'price-icon');
             info.appendChild(priceIcon);
 
@@ -281,7 +281,7 @@ main = function() {
             if (item.blankPrice) {
               setInnerText(price, "問い合わせ");
             } else {
-              setInnerText(price, item.price + " 〜");
+              if (item.price) { setInnerText(price, item.price + " 〜"); }
             }
             price.setAttribute('class', 'price');
             info.appendChild(price);
@@ -324,7 +324,7 @@ main = function() {
               button = document.createElement('a');
               button.setAttribute('class', 'button');
               button.style.background = color;
-              setInnerText(button, 'ビザスクで相談');
+              setInnerText(button, 'スポットコンサルへ');
               end.appendChild(button);
 
           }
@@ -350,6 +350,6 @@ main = function() {
   })();
 };
 
-$(document).ready(function(){main()})
+jQuery(document).ready(function(){main()})
 
 })();

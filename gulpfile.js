@@ -20,14 +20,12 @@ gulp.task('bower', function() { 
 
 gulp.task('default', function () {
   return gulp.src([
+      bowerDir + '/jquery/jquery.min.js',
+      bowerDir + bootstrapDir + '/javascripts/bootstrap.min.js',
       srcDir
     ])
     .pipe(babel())
-    .pipe(sourcemaps.init())
-    .pipe(uglify().on('error', notify.onError(function (error) {
-        return 'Error: ' + error.message;
-    })))
-    .pipe(sourcemaps.write('.'))
+    .pipe(concat('script.js'))
     .pipe(gulp.dest(distDir));
 });
 
