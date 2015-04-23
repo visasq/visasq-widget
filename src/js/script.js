@@ -2,7 +2,7 @@
 
 let addOnloadHandler, corsRequest, getElementsByClassName, main, setIframeHeight, setInnerText, template;
 
-const BASE_URL = 'https://service.visasq.com/';
+const BASE_URL = 'http://localhost:8080/';
 const TOPICS_PATH = 'topics';
 const USERS_PATH = 'users';
 const API_PATH = 'api/v3/';
@@ -113,6 +113,8 @@ corsRequest = function(url, callback) {
   return request.send();
 };
 
+
+
 main = function(){
 
   let widget;
@@ -123,7 +125,8 @@ main = function(){
   width = widget.attr('width');
   color = widget.attr('color');
   iframe = $('<iframe>', {
-    frameBorder: '0'
+    frameBorder: '0',
+    id: 'widget'
   });
   iframe.hide();
   iframe.width(width);
@@ -138,13 +141,14 @@ main = function(){
   itemsBlock = $('#items', doc);
   itemRepository = new ItemRepository();
 
-  header = $('#header');
-  header.css("background-color", color);
-
+  header = $('#header', doc);
+  header.css('background-color', color);
+  
   itemRepository.load(userid, username, function(items) {
     let item, itemType, id, itemLink, url, itemElement, logo, info;
 
     items.forEach((item) => {
+      let toInfo;
 
       itemLink = $('<a>', {
         target: '_blank',
@@ -165,48 +169,24 @@ main = function(){
         userImage, text, name, job, companyName,
         title, description, end, button;
 
-        userImage = $('<div>', {
-          class: 'user-img--s'
-        });
-        userImage.css('background-image', 'url(' + imageUrl + ')');
-        userImage.appendTo(info);
+        let userTemplate = `
+        <div class="info">
+          <div class="user-img--s" style="background-image: url(${item.imageUrl})"></div>
+          <div class="text">
+            <h4 class="title">${item.displayName}</h4>
+            <p class="job">
+              <span>${item.companyName}</span>
+              <span>${item.title}</span>
+            </p>
+            <p class="descript">${item.description}</p>
+          </div>
+        </div>
+        <div class="end">
+          <a class="button" style="background-color: ${color}">ビザスクで相談</a>
+        </div>
+        `;
 
-        text = $('<div>', {
-          class: 'text'
-        }).appendTo(info);
-
-        name = $('<h4>', {
-          class: 'title',
-          text: item.displayName
-        }).appendTo(text);
-
-        job = $('<p>', {
-          class: 'job'
-        }).appendTo(text);
-
-        companyName = $('<span>', {
-          text: item.companyName
-        }).appendTo(job);
-
-        title = $('<span>',{
-          text: item.title
-        }).appendTo(job);
-
-        description = $('<p>', {
-          class: 'descript',
-          text: item.description
-        }).appendTo(text);
-
-        end = $('<div>', {
-          class: 'end'
-        }).appendTo(itemElement);
-
-        button = $('<a>', {
-          class: 'button',
-          text: 'ビザスクで相談'
-        });
-        button.css("background-color", color);
-        button.appendTo(end);
+        $(itemElement).append(userTemplate);
 
         } else if(item.__class__ === 'Topic') {
 
@@ -217,77 +197,36 @@ main = function(){
 
           itemLink.attr('class', 'item card--topic--widget');
 
-          text = $('<div>', {
-            class: 'text'
-          }).appendTo(info);
-
-          title = $('<h4>',{
-            class: 'title',
-            title: item.title
-          }).appendTo(text);
-
-          description = $('<p>',{
-            class: 'descript',
-            text: item.description
-          }).appendTo(text);
-
-          priceIcon = $('<img>',{
-            class: 'price-icon',
-            src: 'https://rawgithub.com/visasq/visasq-widget/master/assets/img/yen.png'
-          }).appendTo(info);
-
-          price = $('<span>', {
-            class: 'price'
-          });
           if (item.blankPrice) {
-            price.text("問い合わせ");
+            price = "問い合わせ";
           } else {
-            price.text(item.price + " 〜");
+            price = item.price + " 〜";
           }
-          price.appendTo(info);
 
-          bottom = $('<div>', {
-            class: 'bottom'
-          }).appendTo(itemElement);
+          let topicTemplate = `
+          <div class="info">
+            <div class="text">
+              <h4 class="title">${item.displayName}</h4>
+              <p class="descript">${item.description}</p>
+            </div>
+            <img class="price-icon" src="https://rawgithub.com/visasq/visasq-widget/master/assets/img/yen.png">
+            <span class="price">${price}</span>
+            <div class="bottom">
+              <div class="liked">
+                <div class="fa fa-star"></div>
+                <div class ="like_count">${item.likes}</div>
+              </div>
+              <div class="divider user"></div>
+              <div class="user.img--min" style="background-image: url(${item.imageUrl})">
+            </div>
+            <div class="name">${item.displayName}</div>
+          </div>
+          <div class="end">
+            <a class="button" style="background-color: ${color}">ビザスクで相談</a>
+          </div>
+          `;
 
-          liked = $('<div>', {
-            class: 'liked'
-          }).appendTo(bottom);
-
-          likedStar = $('<div>', {
-            class: 'fa fa-star'
-          }).appendTo(liked);
-          
-          likedCount = $('<div>', {
-            class: 'like_count',
-            text: item.likes
-          }).appendTo(liked);
-
-          divider = $('<div>', {
-            class: 'divider user'
-          }).appendTo(bottom);
-
-          userImage = $('<div>', {
-              class: 'user-img--min'
-          });
-          userImage.css('background-image', 'url(' + imageUrl + ')');
-          userImage.appendTo(bottom);
-
-          name = $('<div>', {
-            class: 'name',
-            text: item.displayName
-          }).appendTo(itemElement);
-
-          end = $('<div>', {
-            class: 'end'
-          }).appendTo(itemElement);
-
-          button = $('<a>', {
-            class: 'button',
-            text: 'ビザスクで相談'
-          });
-          button.css("background-color", color);
-          button.appendTo(end);
+        $(itemElement).append(topicTemplate);
 
         }
       });
@@ -295,7 +234,8 @@ main = function(){
     iframe.show();
     setTimeout(() => {
       iframe.load(function() {
-        $(this).height( $(this).contents().find("body").height() );
+          iframe.height($('#widget').contents().height());
+          console.log(iframe.height());
       });
         $('.carousel', doc.body).carousel({
           interval: 3000
