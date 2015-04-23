@@ -2,7 +2,7 @@
 
 let addOnloadHandler, corsRequest, getElementsByClassName, main, setIframeHeight, setInnerText, template;
 
-const BASE_URL = 'https://service.visasq.com/';
+const BASE_URL = 'http://localhost:8080/';
 const TOPICS_PATH = 'topics';
 const USERS_PATH = 'users';
 const API_PATH = 'api/v3/';
@@ -113,241 +113,199 @@ corsRequest = function(url, callback) {
   return request.send();
 };
 
-getElementsByClassName = function(oElm, strTagName, strClassName) {
-  let arrElements, arrReturnElements, i, j, oElement, oRegExp, ref;
-  if (strTagName === "*" && oElm.all) {
-    arrElements = oElm.all;
-  } else {
-    arrElements = oElm.getElementsByTagName(strTagName);
-  }
-  arrReturnElements = [];
-  strClassName = strClassName.replace(/\-/g, "\\-");
-  oRegExp = new RegExp("(^|\\s)" + strClassName + "(\\s|$)");
-  oElement;
-  for (i = j = 0, ref = arrElements.length; 0 <= ref ? j <= ref : j >= ref; i = 0 <= ref ? ++j : --j) {
-    oElement = arrElements[i];
-    if (oElement && oRegExp.test(oElement.className)) {
-      arrReturnElements.push(oElement);
-    }
-  }
-  return arrReturnElements;
-};
+main = function(){
 
-setIframeHeight = function(iframe) {
-  let iframeWin;
-  if (iframe) {
-    iframeWin = iframe.contentWindow || iframe.contentDocument.parentWindow;
-    if (iframeWin.document.body) {
-      return iframe.height = iframeWin.document.documentElement.scrollHeight || iframeWin.document.body.scrollHeight;
-    }
-  }
-};
+  let widget;
+  widget = $('a.visasq-cards');
+  let doc, iframe, itemRepository, itemsBlock, results, userid, username, header, width, color;
+  username =  widget.data().visasqUsername;
+  userid = widget.data().visasqUserid;
+  width = widget.attr('width');
+  color = widget.attr('color');
+  iframe = $('<iframe>', {
+    frameBorder: '0'
+  });
+  iframe.hide();
+  iframe.width(width);
+  iframe.appendTo(widget.parent());
+  widget.hide();
 
-setInnerText = function(element, text) {
-  if (typeof element.textContent !== "undefined") {
-    return element.textContent = text;
-  } else {
-    return element.innerText = text;
-  }
-};
+  doc = frames[frames.length - 1].document;
+  doc.open();
+  doc.write(template);
+  doc.close();  
 
-main = function() {
-  let widgets;
-  widgets = getElementsByClassName(document, 'a', 'visasq-cards');
-  (function() {
-    let doc, iframe, itemRepository, itemsBlock, results, userid, username, header, width, color, widget;
-    results = [];
+  itemsBlock = $('#items', doc);
+  itemRepository = new ItemRepository();
 
-    widgets.forEach((widget) => {
+  header = $('#header');
+  header.css("background-color", color);
 
-      username = widget.getAttribute('data-visasq-username');
-      userid = widget.getAttribute('data-visasq-userid');
-      width = widget.getAttribute('width');
-      color = widget.getAttribute('color');
-      iframe = document.createElement('iframe');
-      iframe.style.display = 'none';
-      iframe.setAttribute("frameBorder", "0");
-      iframe.style.width = width;
-      widget.parentNode.appendChild(iframe);
-      widget.style.display = 'none';
-      doc = frames[frames.length - 1].document;
-      doc.open();
-      doc.write(template);
-      doc.close();
-      itemsBlock = doc.getElementById('items');
-      itemRepository = new ItemRepository();
+  itemRepository.load(userid, username, function(items) {
+    let item, itemType, id, itemLink, url, itemElement, logo, info;
 
-      header = doc.getElementById('header');
-      header.style.background = color;
+    items.forEach((item) => {
 
-      results.push(itemRepository.load(userid, username, function(items) {
-        let item, itemType, id, itemLink, url, itemElement, logo, info;
+      itemLink = $('<a>', {
+        target: '_blank',
+        href: item.url
+        }).appendTo(itemsBlock);
 
-        items.forEach((item) => {
+      itemElement = $('<div>').appendTo(itemLink);
 
-          itemLink = document.createElement('a');
-          itemLink.setAttribute('target', '_blank');
-          itemLink.setAttribute('href', item.url);
-          itemsBlock.appendChild(itemLink);
+      info = $('<div>',{
+        class: 'info'
+      }).appendTo(itemElement); 
 
-          itemElement = document.createElement('div');
-          itemLink.appendChild(itemElement);
+      if (item.__class__ === 'User') {
 
-          info = document.createElement('div');
-          info.setAttribute('class', 'info');
-          itemElement.appendChild(info);
+        itemLink.attr('class', 'item active card--user--widget');
 
-          if (item.__class__ === 'User') {
+        let imageUrl = item.imageUrl,
+        userImage, text, name, job, companyName,
+        title, description, end, button;
 
-            itemLink.setAttribute('class', 'item active card--user--widget');
-
-            let imageUrl = item.imageUrl,
-                userImage, text, name, job, companyName,
-                title, description, end, button;
-
-            userImage = document.createElement('div');
-            userImage.setAttribute('class', 'user-img--s');
-            userImage.setAttribute('style', `background-image:url("${imageUrl}")`);
-            info.appendChild(userImage);
-
-            text = document.createElement('div');
-            text.setAttribute('class', 'text');
-            info.appendChild(text);
-
-              name = document.createElement('h4');
-              setInnerText(name, item.displayName);
-              name.setAttribute('class', 'title');
-              text.appendChild(name);
-
-              job = document.createElement('p');
-              job.setAttribute('class', 'job');
-              text.appendChild(job);
-
-                companyName = document.createElement('span');
-                setInnerText(companyName, item.companyName);
-                job.appendChild(companyName);
-
-                title = document.createElement('span');
-                setInnerText(title, item.title);
-                job.appendChild(title);
-
-              description = document.createElement('p');
-              setInnerText(description, item.description);
-              description.setAttribute('class', 'descript');
-              text.appendChild(description);
-
-            end = document.createElement('div');
-            end.setAttribute('class', 'end');
-            itemElement.appendChild(end);
-
-              button = document.createElement('a');
-              button.setAttribute('class', 'button');
-              button.style.background = color;
-              setInnerText(button, 'ビザスクで相談');
-              end.appendChild(button);
-
-          } else if(item.__class__ === 'Topic') {
-
-            let imageUrl = item.imageUrl,
-                text, title, description, price, priceIcon,
-                bottom, liked, likedStar, likedCount, divider,
-                userImage, name, end, button;
-
-            itemLink.setAttribute('class', 'item card--topic--widget');
-
-            text = document.createElement('div');
-            text.setAttribute('class', 'text');
-            info.appendChild(text);
-
-              title = document.createElement('h4');
-              setInnerText(title, item.title);
-              title.setAttribute('class', 'title');
-              text.appendChild(title);
-
-              description = document.createElement('p');
-              setInnerText(description, item.description);
-              description.setAttribute('class', 'descript');
-              text.appendChild(description);
-
-            priceIcon = document.createElement('img');
-            priceIcon.setAttribute('src', 'https://rawgithub.com/visasq/visasq-widget/master/assets/img/yen.png');
-            priceIcon.setAttribute('class', 'price-icon');
-            info.appendChild(priceIcon);
-
-            price = document.createElement('span');
-            price.setAttribute('class', 'price');
-            if (item.blankPrice) {
-              setInnerText(price, "問い合わせ");
-            } else {
-              setInnerText(price, item.price + " 〜");
-            }
-            price.setAttribute('class', 'price');
-            info.appendChild(price);
-
-            bottom = document.createElement('div');
-            bottom.setAttribute('class', 'bottom');
-            itemElement.appendChild(bottom);
-
-              liked = document.createElement('div');
-              liked.setAttribute('class', 'liked');
-              bottom.appendChild(liked);
-
-                likedStar = document.createElement('div');
-                likedStar.setAttribute('class', 'fa fa-star');
-                liked.appendChild(likedStar);
-
-                likedCount = document.createElement('div');
-                likedCount.setAttribute('class', 'like_count');
-                setInnerText(likedCount, item.likes);
-                liked.appendChild(likedCount);
-
-              divider = document.createElement('div');
-              divider.setAttribute('class', 'divider user');
-              bottom.appendChild(divider);
-
-              userImage = document.createElement('div');
-              userImage.setAttribute('class', 'user-img--min');
-              userImage.setAttribute('style', `background-image:url("${imageUrl}")`);
-              bottom.appendChild(userImage);
-
-            name = document.createElement('div');
-            setInnerText(name, item.displayName);
-            name.setAttribute('class', 'name');
-            itemElement.appendChild(name);
-
-            end = document.createElement('div');
-            end.setAttribute('class', 'end');
-            itemElement.appendChild(end);
-
-              button = document.createElement('a');
-              button.setAttribute('class', 'button');
-              button.style.background = color;
-              setInnerText(button, 'ビザスクで相談');
-              end.appendChild(button);
-
-          }
-
+        userImage = $('<div>', {
+          class: 'user-img--s'
         });
+        userImage.css('background-image', 'url(' + imageUrl + ')');
+        userImage.appendTo(info);
 
-        iframe.style.display = 'block';
+        text = $('<div>', {
+          class: 'text'
+        }).appendTo(info);
 
-        setTimeout(() => {
+        name = $('<h4>', {
+          class: 'title',
+          text: item.displayName
+        }).appendTo(text);
 
-          setIframeHeight(iframe);
-          $('.carousel', doc.body).carousel({
-            interval: 3000
-          })
+        job = $('<p>', {
+          class: 'job'
+        }).appendTo(text);
 
-        }, 50)
+        companyName = $('<span>', {
+          text: item.companyName
+        }).appendTo(job);
 
-      }));
+        title = $('<span>',{
+          text: item.title
+        }).appendTo(job);
 
-    });
+        description = $('<p>', {
+          class: 'descript',
+          text: item.description
+        }).appendTo(text);
 
-    return results;
-  })();
-};
+        end = $('<div>', {
+          class: 'end'
+        }).appendTo(itemElement);
 
+        button = $('<a>', {
+          class: 'button',
+          text: 'ビザスクで相談'
+        });
+        button.css("background-color", color);
+        button.appendTo(end);
+
+        } else if(item.__class__ === 'Topic') {
+
+          let imageUrl = item.imageUrl,
+          text, title, description, price, priceIcon,
+          bottom, liked, likedStar, likedCount, divider,
+          userImage, name, end, button;
+
+          itemLink.attr('class', 'item card--topic--widget');
+
+          text = $('<div>', {
+            class: 'text'
+          }).appendTo(info);
+
+          title = $('<h4>',{
+            class: 'title',
+            title: item.title
+          }).appendTo(text);
+
+          description = $('<p>',{
+            class: 'descript',
+            text: item.description
+          }).appendTo(text);
+
+          priceIcon = $('<img>',{
+            class: 'price-icon',
+            src: 'https://rawgithub.com/visasq/visasq-widget/master/assets/img/yen.png'
+          }).appendTo(info);
+
+          price = $('<span>', {
+            class: 'price'
+          });
+          if (item.blankPrice) {
+            price.text("問い合わせ");
+          } else {
+            price.text(item.price + " 〜");
+          }
+          price.appendTo(info);
+
+          bottom = $('<div>', {
+            class: 'bottom'
+          }).appendTo(itemElement);
+
+          liked = $('<div>', {
+            class: 'liked'
+          }).appendTo(bottom);
+
+          likedStar = $('<div>', {
+            class: 'fa fa-star'
+          }).appendTo(liked);
+          
+          likedCount = $('<div>', {
+            class: 'like_count',
+            text: item.likes
+          }).appendTo(liked);
+
+          divider = $('<div>', {
+            class: 'divider user'
+          }).appendTo(bottom);
+
+          userImage = $('<div>', {
+              class: 'user-img--min'
+          });
+          userImage.css('background-image', 'url(' + imageUrl + ')');
+          userImage.appendTo(bottom);
+
+          name = $('<div>', {
+            class: 'name',
+            text: item.displayName
+          }).appendTo(itemElement);
+
+          end = $('<div>', {
+            class: 'end'
+          }).appendTo(itemElement);
+
+          button = $('<a>', {
+            class: 'button',
+            text: 'ビザスクで相談'
+          });
+          button.css("background-color", color);
+          button.appendTo(end);
+
+        }
+      });
+    
+    iframe.show();
+    setTimeout(() => {
+      iframe.load(function() {
+        $(this).height( $(this).contents().find("body").height() );
+      });
+        $('.carousel', doc.body).carousel({
+          interval: 3000
+        })
+    }, 50)
+
+  });
+
+}
+  
 $(document).ready(function(){main()})
 
 })();
