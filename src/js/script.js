@@ -2,7 +2,7 @@
 
 let addOnloadHandler, corsRequest, getElementsByClassName, main, setIframeHeight, setInnerText, template;
 
-const BASE_URL = 'http://localhost:8080/';
+const BASE_URL = 'https://service.visasq.com/';
 const TOPICS_PATH = 'topics';
 const USERS_PATH = 'users';
 const API_PATH = 'api/v3/';
@@ -145,11 +145,9 @@ main = function(){
   header.css('background-color', color);
   
   itemRepository.load(userid, username, function(items) {
-    let item, itemType, id, itemLink, url, itemElement, logo, info;
+    let item, itemLink, itemElement, info;
 
     items.forEach((item) => {
-      let toInfo;
-
       itemLink = $('<a>', {
         target: '_blank',
         href: item.url
@@ -157,17 +155,9 @@ main = function(){
 
       itemElement = $('<div>').appendTo(itemLink);
 
-      info = $('<div>',{
-        class: 'info'
-      }).appendTo(itemElement); 
-
       if (item.__class__ === 'User') {
 
         itemLink.attr('class', 'item active card--user--widget');
-
-        let imageUrl = item.imageUrl,
-        userImage, text, name, job, companyName,
-        title, description, end, button;
 
         let userTemplate = `
         <div class="info">
@@ -188,12 +178,8 @@ main = function(){
 
         $(itemElement).append(userTemplate);
 
-        } else if(item.__class__ === 'Topic') {
-
-          let imageUrl = item.imageUrl,
-          text, title, description, price, priceIcon,
-          bottom, liked, likedStar, likedCount, divider,
-          userImage, name, end, button;
+      } else if(item.__class__ === 'Topic') {
+          let price;
 
           itemLink.attr('class', 'item card--topic--widget');
 
@@ -227,23 +213,19 @@ main = function(){
           `;
 
         $(itemElement).append(topicTemplate);
-
-        }
-      });
+      }
+    });
     
     iframe.show();
     setTimeout(() => {
-      iframe.load(function() {
-          iframe.height($('#widget').contents().height());
-          console.log(iframe.height());
+      iframe.ready(function() {
+        iframe.height($('#widget').contents().height());
       });
         $('.carousel', doc.body).carousel({
           interval: 3000
         })
     }, 50)
-
   });
-
 }
   
 $(document).ready(function(){main()})
