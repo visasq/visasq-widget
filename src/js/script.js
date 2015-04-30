@@ -197,14 +197,14 @@ main = function(){
             </div>
             <img class="price-icon" src="https://rawgithub.com/visasq/visasq-widget/master/assets/img/yen.png">
             <span class="price">${price}</span>
-            <div class="bottom">
-              <div class="liked">
-                <div class="fa fa-star"></div>
-                <div class ="like_count">${item.likes}</div>
-              </div>
-              <div class="divider user"></div>
-              <div class="user.img--min" style="background-image: url(${item.imageUrl})">
+          </div> 
+          <div class="bottom">
+            <div class="liked">
+              <div class="fa fa-star"></div>
+              <div class ="like_count">${item.likes}</div>
             </div>
+            <div class="divider user"></div>
+            <div class="user.img--min" style="background-image: url(${item.imageUrl})"></div>
             <div class="name">${item.displayName}</div>
           </div>
           <div class="end">
