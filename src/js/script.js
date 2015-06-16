@@ -7,6 +7,7 @@ const TOPICS_PATH = 'topics';
 const USERS_PATH = 'users';
 const API_PATH = 'api/v3/';
 const CSS_PATH = 'https://rawgithub.com/visasq/visasq-widget/master/dist/css/styles.css';
+
 const LIB_PATH = 'https://rawgithub.com/visasq/visasq-widget/master/dist/js/lib.js';
 template = `
 <!DOCTYPE html>
@@ -23,7 +24,7 @@ template = `
   <div id="carousel" class="carousel slide carousel-fade">
     <div id="header">
       <a class="carousel-control left" href="#carousel" data-slide="prev"><i class="fa fa-angle-left"></i></a>
-      <a href="https://service.visasq.com/" target="_blank"><img src="https://rawgithub.com/visasq/visasq-widget/v1/assets/img/logo.png" /></a>
+      <a href="https://service.visasq.com/" target="_blank"><img src="https://rawgithub.com/visasq/visasq-widget/master/assets/img/logo.png" /></a>
       <a class="carousel-control right" href="#carousel" data-slide="next"><i class="fa fa-angle-right"></i></a>
     </div>
     <ol id="indicators" class="carousel-indicators"></ol>
@@ -119,31 +120,32 @@ main = function(){
 
   let widget;
   widget = $('a.visasq-cards');
-  let doc, iframe, itemRepository, itemsBlock, results, userid, username, header, width, color;
+  let doc, iframe, itemRepository, itemsBlock, results, userid, username, header, width, color, imgcolor;
   username =  widget.data().visasqUsername;
   userid = widget.data().visasqUserid;
   width = widget.attr('width');
   color = widget.attr('color');
+  imgcolor = color.replace(/#/g,"");
   iframe = $('<iframe>', {
     frameBorder: '0',
     id: 'widget'
   });
   iframe.hide();
   iframe.width(width);
-  iframe.appendTo(widget.parent());
+  iframe.insertAfter(widget);
   widget.hide();
 
   doc = frames[frames.length - 1].document;
   doc.open();
   doc.write(template);
-  doc.close();  
+  doc.close();
 
   itemsBlock = $('#items', doc);
   itemRepository = new ItemRepository();
 
   header = $('#header', doc);
-  header.css('background-color', color);
-  
+  header.css('background-image', 'url("https://rawgithub.com/visasq/visasq-widget/master/assets/img/back-' + imgcolor + '.png")');
+
   itemRepository.load(userid, username, function(items) {
     let item, itemLink, itemElement, info;
 
@@ -172,7 +174,7 @@ main = function(){
           </div>
         </div>
         <div class="end">
-          <a class="button" style="background-color: ${color}">ビザスクで相談</a>
+          <a class="button">ビザスクで相談</a>
         </div>
         `;
 
@@ -192,34 +194,34 @@ main = function(){
           let topicTemplate = `
           <div class="info">
             <div class="text">
-              <h4 class="title">${item.displayName}</h4>
+              <h4 class="title">${item.title}</h4>
               <p class="descript">${item.description}</p>
             </div>
             <img class="price-icon" src="https://rawgithub.com/visasq/visasq-widget/master/assets/img/yen.png">
             <span class="price">${price}</span>
-          </div> 
+          </div>
           <div class="bottom">
             <div class="liked">
               <div class="fa fa-star"></div>
               <div class ="like_count">${item.likes}</div>
             </div>
             <div class="divider user"></div>
-            <div class="user.img--min" style="background-image: url(${item.imageUrl})"></div>
+            <div class="user-img--min" style="background-image: url(${item.imageUrl})"></div>
             <div class="name">${item.displayName}</div>
           </div>
           <div class="end">
-            <a class="button" style="background-color: ${color}">ビザスクで相談</a>
+            <a class="button">ビザスクで相談</a>
           </div>
           `;
 
         $(itemElement).append(topicTemplate);
       }
     });
-    
+
     iframe.show();
     setTimeout(() => {
       iframe.ready(function() {
-        iframe.height($('#widget').contents().height());
+        iframe.height('300px');
       });
         $('.carousel', doc.body).carousel({
           interval: 3000
@@ -227,7 +229,7 @@ main = function(){
     }, 50)
   });
 }
-  
+
 $(document).ready(function(){main()})
 
 
