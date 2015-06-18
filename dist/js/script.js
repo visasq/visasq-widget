@@ -2745,8 +2745,9 @@ var _classCallCheck = function (instance, Constructor) { if (!(instance instance
   var USERS_PATH = "users";
   var API_PATH = "api/v3/";
   var CSS_PATH = "https://rawgithub.com/visasq/visasq-widget/master/dist/css/styles.css";
+
   var LIB_PATH = "https://rawgithub.com/visasq/visasq-widget/master/dist/js/lib.js";
-  template = "\n<!DOCTYPE html>\n<html lang=\"ja\">\n<head>\n<meta charset=\"utf-8\" />\n<link rel=\"stylesheet\" href=\"" + CSS_PATH + "\">\n<link rel=\"stylesheet\" href=\"//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css\">\n<script async src=\"" + LIB_PATH + "\"></script>\n</head>\n<body>\n\n<div class=\"card--widget\">\n  <div id=\"carousel\" class=\"carousel slide carousel-fade\">\n    <div id=\"header\">\n      <a class=\"carousel-control left\" href=\"#carousel\" data-slide=\"prev\"><i class=\"fa fa-angle-left\"></i></a>\n      <a href=\"https://service.visasq.com/\" target=\"_blank\"><img src=\"https://rawgithub.com/visasq/visasq-widget/v1/assets/img/logo.png\" /></a>\n      <a class=\"carousel-control right\" href=\"#carousel\" data-slide=\"next\"><i class=\"fa fa-angle-right\"></i></a>\n    </div>\n    <ol id=\"indicators\" class=\"carousel-indicators\"></ol>\n    <!-- Carousel items -->\n    <div class=\"items carousel-inner\" id=\"items\"></div>\n  </div>\n</div>\n\n</body>\n</html>\n";
+  template = "\n<!DOCTYPE html>\n<html lang=\"ja\">\n<head>\n<meta charset=\"utf-8\" />\n<link rel=\"stylesheet\" href=\"" + CSS_PATH + "\">\n<link rel=\"stylesheet\" href=\"//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css\">\n<script async src=\"" + LIB_PATH + "\"></script>\n</head>\n<body>\n\n<div class=\"card--widget\">\n  <div id=\"carousel\" class=\"carousel slide carousel-fade\">\n    <div id=\"header\">\n      <a class=\"carousel-control left\" href=\"#carousel\" data-slide=\"prev\"><i class=\"fa fa-angle-left\"></i></a>\n      <a href=\"https://service.visasq.com/\" target=\"_blank\"><img src=\"https://rawgithub.com/visasq/visasq-widget/master/assets/img/logo.png\" /></a>\n      <a class=\"carousel-control right\" href=\"#carousel\" data-slide=\"next\"><i class=\"fa fa-angle-right\"></i></a>\n    </div>\n    <ol id=\"indicators\" class=\"carousel-indicators\"></ol>\n    <!-- Carousel items -->\n    <div class=\"items carousel-inner\" id=\"items\"></div>\n  </div>\n</div>\n\n</body>\n</html>\n";
 
   var ItemRepository = (function () {
     function ItemRepository() {
@@ -2836,279 +2837,97 @@ var _classCallCheck = function (instance, Constructor) { if (!(instance instance
     return request.send();
   };
 
-  getElementsByClassName = function (oElm, strTagName, strClassName) {
-    var arrElements = undefined,
-        arrReturnElements = undefined,
-        i = undefined,
-        j = undefined,
-        oElement = undefined,
-        oRegExp = undefined,
-        ref = undefined;
-    if (strTagName === "*" && oElm.all) {
-      arrElements = oElm.all;
-    } else {
-      arrElements = oElm.getElementsByTagName(strTagName);
-    }
-    arrReturnElements = [];
-    strClassName = strClassName.replace(/\-/g, "\\-");
-    oRegExp = new RegExp("(^|\\s)" + strClassName + "(\\s|$)");
-    oElement;
-    for (i = j = 0, ref = arrElements.length; 0 <= ref ? j <= ref : j >= ref; i = 0 <= ref ? ++j : --j) {
-      oElement = arrElements[i];
-      if (oElement && oRegExp.test(oElement.className)) {
-        arrReturnElements.push(oElement);
-      }
-    }
-    return arrReturnElements;
-  };
-
-  setIframeHeight = function (iframe) {
-    var iframeWin = undefined;
-    if (iframe) {
-      iframeWin = iframe.contentWindow || iframe.contentDocument.parentWindow;
-      if (iframeWin.document.body) {
-        return iframe.height = iframeWin.document.documentElement.scrollHeight || iframeWin.document.body.scrollHeight;
-      }
-    }
-  };
-
-  setInnerText = function (element, text) {
-    if (typeof element.textContent !== "undefined") {
-      return element.textContent = text;
-    } else {
-      return element.innerText = text;
-    }
-  };
-
   main = function () {
-    var widgets = undefined;
-    widgets = getElementsByClassName(document, "a", "visasq-cards");
-    (function () {
-      var doc = undefined,
-          iframe = undefined,
-          itemRepository = undefined,
-          itemsBlock = undefined,
-          results = undefined,
-          userid = undefined,
-          username = undefined,
-          header = undefined,
-          width = undefined,
-          color = undefined,
-          widget = undefined;
-      results = [];
 
-      widgets.forEach(function (widget) {
+    var widget = undefined;
+    widget = $("a.visasq-cards");
+    var doc = undefined,
+        iframe = undefined,
+        itemRepository = undefined,
+        itemsBlock = undefined,
+        results = undefined,
+        userid = undefined,
+        username = undefined,
+        header = undefined,
+        width = undefined,
+        color = undefined,
+        imgcolor = undefined;
+    username = widget.data().visasqUsername;
+    userid = widget.data().visasqUserid;
+    width = widget.attr("width");
+    color = widget.attr("color");
+    imgcolor = color.replace(/#/g, "");
+    iframe = $("<iframe>", {
+      frameBorder: "0",
+      id: "widget"
+    });
+    iframe.hide();
+    iframe.width(width);
+    iframe.insertAfter(widget);
+    widget.hide();
 
-        username = widget.getAttribute("data-visasq-username");
-        userid = widget.getAttribute("data-visasq-userid");
-        width = widget.getAttribute("width");
-        color = widget.getAttribute("color");
-        iframe = document.createElement("iframe");
-        iframe.style.display = "none";
-        iframe.setAttribute("frameBorder", "0");
-        iframe.style.width = width;
-        widget.parentNode.appendChild(iframe);
-        widget.style.display = "none";
-        doc = frames[frames.length - 1].document;
-        doc.open();
-        doc.write(template);
-        doc.close();
-        itemsBlock = doc.getElementById("items");
-        itemRepository = new ItemRepository();
+    doc = frames[frames.length - 1].document;
+    doc.open();
+    doc.write(template);
+    doc.close();
 
-        header = doc.getElementById("header");
-        header.style.background = color;
+    itemsBlock = $("#items", doc);
+    itemRepository = new ItemRepository();
 
-        results.push(itemRepository.load(userid, username, function (items) {
-          var item = undefined,
-              itemType = undefined,
-              id = undefined,
-              itemLink = undefined,
-              url = undefined,
-              itemElement = undefined,
-              logo = undefined,
-              info = undefined;
+    header = $("#header", doc);
+    header.css("background-image", "url(\"https://rawgithub.com/visasq/visasq-widget/master/assets/img/back-" + imgcolor + ".png\")");
 
-          items.forEach(function (item) {
+    itemRepository.load(userid, username, function (items) {
+      var item = undefined,
+          itemLink = undefined,
+          itemElement = undefined,
+          info = undefined;
 
-            itemLink = document.createElement("a");
-            itemLink.setAttribute("target", "_blank");
-            itemLink.setAttribute("href", item.url);
-            itemsBlock.appendChild(itemLink);
+      items.forEach(function (item) {
+        itemLink = $("<a>", {
+          target: "_blank",
+          href: item.url
+        }).appendTo(itemsBlock);
 
-            itemElement = document.createElement("div");
-            itemLink.appendChild(itemElement);
+        itemElement = $("<div>").appendTo(itemLink);
 
-            info = document.createElement("div");
-            info.setAttribute("class", "info");
-            itemElement.appendChild(info);
+        if (item.__class__ === "User") {
 
-            if (item.__class__ === "User") {
+          itemLink.attr("class", "item active card--user--widget");
 
-              itemLink.setAttribute("class", "item active card--user--widget");
+          var userTemplate = "\n        <div class=\"info\">\n          <div class=\"user-img--s\" style=\"background-image: url(" + item.imageUrl + ")\"></div>\n          <div class=\"text\">\n            <h4 class=\"title\">" + item.displayName + "</h4>\n            <p class=\"job\">\n              <span>" + item.companyName + "</span>\n              <span>" + item.title + "</span>\n            </p>\n            <p class=\"descript\">" + item.description + "</p>\n          </div>\n        </div>\n        <div class=\"end\">\n          <a class=\"button\">ビザスクで相談</a>\n        </div>\n        ";
 
-              var imageUrl = item.imageUrl,
-                  userImage = undefined,
-                  text = undefined,
-                  _name = undefined,
-                  job = undefined,
-                  companyName = undefined,
-                  title = undefined,
-                  description = undefined,
-                  end = undefined,
-                  button = undefined;
+          $(itemElement).append(userTemplate);
+        } else if (item.__class__ === "Topic") {
+          var price = undefined;
 
-              userImage = document.createElement("div");
-              userImage.setAttribute("class", "user-img--s");
-              userImage.setAttribute("style", "background-image:url(\"" + imageUrl + "\")");
-              info.appendChild(userImage);
+          itemLink.attr("class", "item card--topic--widget");
 
-              text = document.createElement("div");
-              text.setAttribute("class", "text");
-              info.appendChild(text);
+          if (item.blankPrice) {
+            price = "問い合わせ";
+          } else {
+            price = item.price + " 〜";
+          }
 
-              _name = document.createElement("h4");
-              setInnerText(_name, item.displayName);
-              _name.setAttribute("class", "title");
-              text.appendChild(_name);
+          var topicTemplate = "\n          <div class=\"info\">\n            <div class=\"text\">\n              <h4 class=\"title\">" + item.title + "</h4>\n              <p class=\"descript\">" + item.description + "</p>\n            </div>\n            <img class=\"price-icon\" src=\"https://rawgithub.com/visasq/visasq-widget/master/assets/img/yen.png\">\n            <span class=\"price\">" + price + "</span>\n          </div>\n          <div class=\"bottom\">\n            <div class=\"liked\">\n              <div class=\"fa fa-star\"></div>\n              <div class =\"like_count\">" + item.likes + "</div>\n            </div>\n            <div class=\"divider user\"></div>\n            <div class=\"user-img--min\" style=\"background-image: url(" + item.imageUrl + ")\"></div>\n            <div class=\"name\">" + item.displayName + "</div>\n          </div>\n          <div class=\"end\">\n            <a class=\"button\">ビザスクで相談</a>\n          </div>\n          ";
 
-              job = document.createElement("p");
-              job.setAttribute("class", "job");
-              text.appendChild(job);
-
-              companyName = document.createElement("span");
-              setInnerText(companyName, item.companyName);
-              job.appendChild(companyName);
-
-              title = document.createElement("span");
-              setInnerText(title, item.title);
-              job.appendChild(title);
-
-              description = document.createElement("p");
-              setInnerText(description, item.description);
-              description.setAttribute("class", "descript");
-              text.appendChild(description);
-
-              end = document.createElement("div");
-              end.setAttribute("class", "end");
-              itemElement.appendChild(end);
-
-              button = document.createElement("a");
-              button.setAttribute("class", "button");
-              button.style.background = color;
-              setInnerText(button, "スポットコンサルへ");
-              end.appendChild(button);
-            } else if (item.__class__ === "Topic") {
-
-              var imageUrl = item.imageUrl,
-                  text = undefined,
-                  title = undefined,
-                  description = undefined,
-                  price = undefined,
-                  priceIcon = undefined,
-                  bottom = undefined,
-                  liked = undefined,
-                  likedStar = undefined,
-                  likedCount = undefined,
-                  divider = undefined,
-                  userImage = undefined,
-                  _name2 = undefined,
-                  end = undefined,
-                  button = undefined;
-
-              itemLink.setAttribute("class", "item card--topic--widget");
-
-              text = document.createElement("div");
-              text.setAttribute("class", "text");
-              info.appendChild(text);
-
-              title = document.createElement("h4");
-              setInnerText(title, item.title);
-              title.setAttribute("class", "title");
-              text.appendChild(title);
-
-              description = document.createElement("p");
-              setInnerText(description, item.description);
-              description.setAttribute("class", "descript");
-              text.appendChild(description);
-
-              priceIcon = document.createElement("img");
-              priceIcon.setAttribute("src", "https://rawgithub.com/visasq/visasq-widget/v1/assets/img/yen.png");
-              priceIcon.setAttribute("class", "price-icon");
-              info.appendChild(priceIcon);
-
-              price = document.createElement("span");
-              price.setAttribute("class", "price");
-              if (item.blankPrice) {
-                setInnerText(price, "問い合わせ");
-              } else {
-                if (item.price) {
-                  setInnerText(price, item.price + " 〜");
-                }
-              }
-              price.setAttribute("class", "price");
-              info.appendChild(price);
-
-              bottom = document.createElement("div");
-              bottom.setAttribute("class", "bottom");
-              itemElement.appendChild(bottom);
-
-              liked = document.createElement("div");
-              liked.setAttribute("class", "liked");
-              bottom.appendChild(liked);
-
-              likedStar = document.createElement("div");
-              likedStar.setAttribute("class", "fa fa-star");
-              liked.appendChild(likedStar);
-
-              likedCount = document.createElement("div");
-              likedCount.setAttribute("class", "like_count");
-              setInnerText(likedCount, item.likes);
-              liked.appendChild(likedCount);
-
-              divider = document.createElement("div");
-              divider.setAttribute("class", "divider user");
-              bottom.appendChild(divider);
-
-              userImage = document.createElement("div");
-              userImage.setAttribute("class", "user-img--min");
-              userImage.setAttribute("style", "background-image:url(\"" + imageUrl + "\")");
-              bottom.appendChild(userImage);
-
-              _name2 = document.createElement("div");
-              setInnerText(_name2, item.displayName);
-              _name2.setAttribute("class", "name");
-              itemElement.appendChild(_name2);
-
-              end = document.createElement("div");
-              end.setAttribute("class", "end");
-              itemElement.appendChild(end);
-
-              button = document.createElement("a");
-              button.setAttribute("class", "button");
-              button.style.background = color;
-              setInnerText(button, "スポットコンサルへ");
-              end.appendChild(button);
-            }
-          });
-
-          iframe.style.display = "block";
-
-          setTimeout(function () {
-
-            setIframeHeight(iframe);
-            $(".carousel", doc.body).carousel({
-              interval: 3000
-            });
-          }, 50);
-        }));
+          $(itemElement).append(topicTemplate);
+        }
       });
 
-      return results;
-    })();
+      iframe.show();
+      setTimeout(function () {
+        iframe.ready(function () {
+          iframe.height("300px");
+        });
+        $(".carousel", doc.body).carousel({
+          interval: 3000
+        });
+      }, 50);
+    });
   };
 
-  jQuery(document).ready(function () {
+  $(document).ready(function () {
     main();
   });
 })();

@@ -41,14 +41,16 @@ a {
 
 #header {
   position: relative;
-  background: #265587;
+  background-image: url('https://rawgithub.com/visasq/visasq-widget/master/assets/img/back-265587.png');
+  background-size: cover;
+  background-position: center;
   text-align: center;
-  height: 40px;
+  height: 50px;
 
   img {
-    height: 22px;
+    height: 25px;
     width: auto;
-    margin: 10px 0;
+    margin: 14px 0;
     transition: 0.3s;
 
     &:hover {
@@ -58,7 +60,7 @@ a {
 
   .carousel-control {
     text-shadow: none;
-    top: 5px;
+    top: 12px;
     opacity: 0.8;
     transition: 0.3s;
 
@@ -128,6 +130,7 @@ a {
       color: #222222;
       font-weight: bold;
       line-height: $card-lh;
+      word-break: break-all;
     }
 
     .descript {
@@ -136,6 +139,7 @@ a {
       line-height: $card-lh;
       text-align: justify;
       text-justify: auto;
+      word-break: break-all;
     }
 
     &:hover {
@@ -211,7 +215,7 @@ a {
     .button {
 
       cursor: pointer;
-      background: #265587;
+      background: #222222;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
       font-weight: bold;
