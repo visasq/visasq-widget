@@ -2745,7 +2745,6 @@ var _classCallCheck = function (instance, Constructor) { if (!(instance instance
   var USERS_PATH = "users";
   var API_PATH = "api/v3/";
   var CSS_PATH = "https://rawgithub.com/visasq/visasq-widget/master/dist/css/styles.css";
-
   var LIB_PATH = "https://rawgithub.com/visasq/visasq-widget/master/dist/js/lib.js";
   template = "\n<!DOCTYPE html>\n<html lang=\"ja\">\n<head>\n<meta charset=\"utf-8\" />\n<link rel=\"stylesheet\" href=\"" + CSS_PATH + "\">\n<link rel=\"stylesheet\" href=\"//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css\">\n<script async src=\"" + LIB_PATH + "\"></script>\n</head>\n<body>\n\n<div class=\"card--widget\">\n  <div id=\"carousel\" class=\"carousel slide carousel-fade\">\n    <div id=\"header\">\n      <a class=\"carousel-control left\" href=\"#carousel\" data-slide=\"prev\"><i class=\"fa fa-angle-left\"></i></a>\n      <a href=\"https://service.visasq.com/\" target=\"_blank\"><img src=\"https://rawgithub.com/visasq/visasq-widget/master/assets/img/logo.png\" /></a>\n      <a class=\"carousel-control right\" href=\"#carousel\" data-slide=\"next\"><i class=\"fa fa-angle-right\"></i></a>\n    </div>\n    <ol id=\"indicators\" class=\"carousel-indicators\"></ol>\n    <!-- Carousel items -->\n    <div class=\"items carousel-inner\" id=\"items\"></div>\n  </div>\n</div>\n\n</body>\n</html>\n";
 
@@ -2875,6 +2874,7 @@ var _classCallCheck = function (instance, Constructor) { if (!(instance instance
     itemRepository = new ItemRepository();
 
     header = $("#header", doc);
+    header.css("background-color", color);
     header.css("background-image", "url(\"https://rawgithub.com/visasq/visasq-widget/master/assets/img/back-" + imgcolor + ".png\")");
 
     itemRepository.load(userid, username, function (items) {

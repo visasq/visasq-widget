@@ -7,7 +7,6 @@ const TOPICS_PATH = 'topics';
 const USERS_PATH = 'users';
 const API_PATH = 'api/v3/';
 const CSS_PATH = 'https://rawgithub.com/visasq/visasq-widget/master/dist/css/styles.css';
-
 const LIB_PATH = 'https://rawgithub.com/visasq/visasq-widget/master/dist/js/lib.js';
 template = `
 <!DOCTYPE html>
@@ -144,6 +143,7 @@ main = function(){
   itemRepository = new ItemRepository();
 
   header = $('#header', doc);
+  header.css('background-color', color);
   header.css('background-image', 'url("https://rawgithub.com/visasq/visasq-widget/master/assets/img/back-' + imgcolor + '.png")');
 
   itemRepository.load(userid, username, function(items) {
