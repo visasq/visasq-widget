@@ -2903,8 +2903,8 @@ var _classCallCheck = function (instance, Constructor) { if (!(instance instance
 
           itemLink.attr("class", "item card--topic--widget");
 
-          if (item.blankPrice) {
-            price = "問い合わせ";
+          if (item.blankPrice || !item.price) {
+            price = "お問い合わせ";
           } else {
             price = item.price + " 〜";
           }
@@ -2921,7 +2921,7 @@ var _classCallCheck = function (instance, Constructor) { if (!(instance instance
           iframe.height("300px");
         });
         $(".carousel", doc.body).carousel({
-          interval: 3000
+          interval: 10000
         });
       }, 50);
     });
