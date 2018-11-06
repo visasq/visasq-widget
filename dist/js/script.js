@@ -7,6 +7,6 @@
   img.setAttribute('src', 'https://raw.githubusercontent.com/visasq/visasq-widget/v1/assets/img/eol.png');
   img.setAttribute('width', width);
 
-  document.body.insertBefore(img, card)
+  card.parentElement.insertBefore(img, card)
 })();
 
